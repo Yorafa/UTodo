@@ -6,6 +6,8 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
+from .serializers.RegisterSerializer import RegisterSerializer
 
 # Create your views here.
 class LoginView(generics.CreateAPIView):
@@ -47,3 +49,16 @@ class LogoutView(APIView):
             pass
         logout(request)
         return Response("You have successfully logged out")
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response("Please fill up following form to register")
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response("You have successfully registered")
