@@ -4,8 +4,11 @@ from task.admin import TaskInline
 # Register your models here.
 
 class AssessmentAdmin(admin.ModelAdmin):
-    list_display = ('atype', 'other_type', 'course_id', 'course')
+    list_display = ('assessment', 'course_id', 'course')
     inlines = [TaskInline]
+    
+    def assessment(self, obj):
+        return str(obj)
 
 class AssessmentInline(admin.TabularInline):
     model = Assessment

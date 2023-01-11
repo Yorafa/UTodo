@@ -8,7 +8,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
-    grade = models.FloatField()
+    grade = models.FloatField(default=0.0)
 
     def __str__(self):
         return self.name
