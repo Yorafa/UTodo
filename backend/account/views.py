@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from account.serializers.login import LoginSerializer
-from account.serializers.signin import SigninSerializer
-from account.serializers.Register import RegisterSerializer
+from account.serializers.signup import SignupSerializer
 from account.serializers.Profile import ProfileSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -23,8 +22,8 @@ class LoginView(generics.CreateAPIView):
         login(request, serializer.validated_data['user'])
         return Response("You have successfully logged in")
     
-class SigninView(generics.CreateAPIView):
-    serializer_class = SigninSerializer
+class SignupView(generics.CreateAPIView):
+    serializer_class = SignupSerializer
     permission_classes = (permissions.AllowAny,)
     
     def get(self, request, *args, **kwargs):
@@ -49,20 +48,6 @@ class LogoutView(APIView):
             pass
         logout(request)
         return Response("You have successfully logged out")
-
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-
-    def get(self, request, *args, **kwargs):
-        return Response("Please fill up following form to register")
-    
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response("You have successfully registered")
-
 
 class ProfileView(APIView):
     queryset = User.objects.all()

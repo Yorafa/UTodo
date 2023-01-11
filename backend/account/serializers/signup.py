@@ -1,16 +1,17 @@
 from account.admin import User 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueValidator
 import re
 
-class SigninSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+class SignupSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=20, min_length=4, required=True, validators=[UniqueValidator(queryset=User.objects.all())])
     password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
     
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2')
-        extra_kwargs = {'username': {'validators': []}}
+        extra_kwargs = {'username': {'validators': [UniqueValidator(queryset=User.objects.all())]}}
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,11 +29,6 @@ class SigninSerializer(serializers.ModelSerializer):
         currUser.set_password(data['password'])
         currUser.save()
         return currUser
-
-    def validate_username(self, username):
-        if User.objects.filter(username=username).exists():
-            raise ValidationError("Username already exists")
-        return username
     
     def validate_password(self, password):
         if len(password) < 8:
