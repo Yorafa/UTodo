@@ -21,4 +21,4 @@ class Assessment(models.Model):
         if self.atype == '7':
             return self.other_type
         else:
-            return self.get_type_display()
+            return self.get_atype_display()
