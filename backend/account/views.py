@@ -2,6 +2,7 @@ from django.shortcuts import render
 from account.serializers.login import LoginSerializer
 from account.serializers.signin import SigninSerializer
 from account.serializers.Register import RegisterSerializer
+from account.serializers.Profile import ProfileSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -61,3 +62,17 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response("You have successfully registered")
+
+
+class ProfileView(APIView):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(username=kwargs['username'])
+            serializer = ProfileSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response("User does not exist")

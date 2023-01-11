@@ -7,7 +7,6 @@ class CourseSerializer(serializers.ModelSerializer):
     queryset = Course.objects.all()
     name = serializers.CharField()
     description = serializers.CharField()
-    user = serializers.CharField()
     grade = serializers.FloatField()
 
     assessment = AssessmentSerializer(many=True)
@@ -24,10 +23,8 @@ class CourseSerializer(serializers.ModelSerializer):
         return course
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get('description', instance.description)
         instance.grade = validated_data.get('grade', instance.grade)
-        instance.user = validated_data.get('user', instance.user)
         instance.save()
         return instance
     

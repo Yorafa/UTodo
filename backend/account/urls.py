@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.urls import path
-from .views import LoginView, SigninView, LogoutView, RegisterView
+from .views import LoginView, SigninView, LogoutView, RegisterView, ProfileView
 from django.urls import include
 urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('signin/', SigninView.as_view(), name='signin'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('<str:username>/', ProfileView.as_view(), name='profile'),
     path('', include('course.urls')),
 ]
