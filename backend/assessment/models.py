@@ -13,12 +13,12 @@ ACCESS_CHOICES = (
 )
 
 class Assessment(models.Model):
-    type = models.CharField(max_length=1, choices=ACCESS_CHOICES)
+    atype = models.CharField(max_length=1, choices=ACCESS_CHOICES)
     other_type = models.CharField(max_length=100, blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.type == '7':
+        if self.atype == '7':
             return self.other_type
         else:
             return self.get_type_display()
