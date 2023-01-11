@@ -11,4 +11,4 @@ class Course(models.Model):
     grade = models.FloatField(default=0.0)
 
     def __str__(self):
-        return self.name
+        return self.user.username + '\'s ' + self.name 
