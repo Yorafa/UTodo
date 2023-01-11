@@ -5,8 +5,9 @@ from assessment.models import Assessment
 
 class Task(models.Model):
     due_date = models.DateTimeField()
-    grade = models.IntegerField()
+    grade = models.FloatField()
     title = models.CharField(max_length=200)
+    is_chosen = models.BooleanField(default=True)
     
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='tasks')
 

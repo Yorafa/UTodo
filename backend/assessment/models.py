@@ -16,6 +16,8 @@ class Assessment(models.Model):
     atype = models.CharField(max_length=1, choices=ACCESS_CHOICES)
     other_type = models.CharField(max_length=100, blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    grade = models.FloatField()
+    count = models.IntegerField(default=1)
 
     def __str__(self):
         if self.atype == '7':
