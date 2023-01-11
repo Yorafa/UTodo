@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from account.serializers.login import LoginSerializer
 from account.serializers.signin import SigninSerializer
-from rest_framework import generics
-from rest_framework import permissions
+from account.serializers.Register import RegisterSerializer
+from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from .serializers.RegisterSerializer import RegisterSerializer
 
 # Create your views here.
 class LoginView(generics.CreateAPIView):

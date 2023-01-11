@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Task
+from task.models import Task
 
 class TaskSerializer(serializers.ModelSerializer):
     due_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
