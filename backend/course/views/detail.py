@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from course.models import Course
-from course.serializers.course import CourseSerializer
+from course.serializers.detail import CourseSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 # Create your views here.
