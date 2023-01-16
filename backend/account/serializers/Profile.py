@@ -20,6 +20,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return profile
 
     def update(self, instance, validated_data):
+        print("instance", instance)
         instance.grade = validated_data.get('grade', instance.grade)
         instance.count = validated_data.get('count', instance.count)
         instance.save()

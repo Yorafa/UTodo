@@ -13,6 +13,7 @@ SEMESTER_CHOICES = (
 class Course(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    university = models.CharField(max_length=100, default='University of Toronto')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     grade = models.FloatField(default=0.0)
     year = models.IntegerField(default=datetime.now().year)

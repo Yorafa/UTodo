@@ -56,7 +56,7 @@ class ProfileView(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(username=kwargs['username'])
+            user = request.user
             serializer = ProfileSerializer(user)
             return Response(serializer.data)
         except User.DoesNotExist:
