@@ -1,46 +1,39 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Task
-from .serializers.Task import TaskSerializer
-from rest_framework.parsers import JSONParser
+from task.models import Task
+from task.serializers.Task import TaskSerializer
+from rest_framework import generics, permissions
+from rest_framework.response import Response
 
 # Create your views here.
 
-@csrf_exempt
-def task_list(request):
-    if request.method == 'GET':
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = (permissions.AllowAny,)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = TaskSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    def get(self, request, *args, **kwargs):
+        try:
+            task = Task.objects.get(pk=kwargs['pk'])
+            serializer = TaskSerializer(task)
+            return Response(serializer.data)
+        except Task.DoesNotExist:
+            return Response("Task does not exist")
 
-@csrf_exempt
-def task_detail(request, pk):
-    try:
-        task = Task.objects.get(pk=pk)
-    except Task.DoesNotExist:
-        return HttpResponse(status=404)
-    
-    if request.method == 'GET':
-        serializer = TaskSerializer(task)
-        return JsonResponse(serializer.data)
+    def put(self, request, *args, **kwargs):
+        try:
+            task = Task.objects.get(pk=kwargs['pk'])
+            serializer = TaskSerializer(task, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        except Task.DoesNotExist:
+            return Response("Task does not exist")
 
-    if request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = TaskSerializer(task, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-    
-    if request.method == 'DELETE':
-        task.delete()
-        return HttpResponse(status=204)
+    def delete(self, request, *args, **kwargs):
+        try:
+            task = Task.objects.get(pk=kwargs['pk'])
+            task.delete()
+            return Response("Task has been deleted")
+        except Task.DoesNotExist:
+            return Response("Task does not exist")
