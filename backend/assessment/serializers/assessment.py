@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from assessment.models import Assessment
-from task.serializers.Task import TaskSerializer
+from task.serializers.task import TaskSerializer
 from task.models import Task
 
 class AssessmentSerializer(serializers.ModelSerializer):

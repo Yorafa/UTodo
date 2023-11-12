@@ -5,6 +5,7 @@ from assessment.admin import AssessmentInline
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('info', 'description', 'user_id', 'user')
+    list_filter = ('user',)
     inlines = [AssessmentInline]
     
     def info(self, obj):

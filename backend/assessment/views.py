@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from assessment.models import Assessment
-from assessment.serializers.Assessment import AssessmentSerializer
+from backend.assessment.serializers.assessment import AssessmentSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 

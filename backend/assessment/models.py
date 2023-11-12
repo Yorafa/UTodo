@@ -13,10 +13,12 @@ ACCESS_CHOICES = (
 )
 
 class Assessment(models.Model):
-    atype = models.CharField(max_length=11, choices=ACCESS_CHOICES)
-    grade = models.FloatField(default=1.0)
-    count = models.IntegerField(default=1)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessment')
+    id = models.AutoField(primary_key=True)
+    assessment_type = models.CharField(max_length=11, choices=ACCESS_CHOICES)
+    grade_now = models.FloatField(default=0.0)
+    grade_total = models.FloatField(default=0.0)
+    is_counted = models.BooleanField(default=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessments')
 
     def __str__(self):
-        return str(self.course) + ' ' + self.get_atype_display()
+        return str(self.course) + ' ' + self.get_assessment_type_display()
