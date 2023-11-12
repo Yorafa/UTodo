@@ -28,10 +28,13 @@ class Course(models.Model):
         assessments = self.assessments.all()
         total_now = 0
         total = 0
+        print("i'm here")
         for assessment in assessments:
             if assessment.is_counted:
                 total += assessment.grade_total
                 total_now += assessment.grade_now
+        print(total_now)
+        print(total)
         self.grade_now = total_now
         self.grade_total = total
         self.save()

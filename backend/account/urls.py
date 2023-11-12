@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.urls import path
-from .views import LoginView, SignupView, LogoutView, ProfileView
+from account.views import LoginView, SignupView, LogoutView, ProfileView
 from django.urls import include
 urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

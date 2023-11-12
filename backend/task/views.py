@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from task.models import Task
-from backend.task.serializers.task import TaskSerializer
+from task.serializers.task import TaskSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 

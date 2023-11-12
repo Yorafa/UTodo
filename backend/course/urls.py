@@ -6,9 +6,9 @@ from course.views.create_course import CreateCourseAPIView
 
 
 urlpatterns = [
-    # path("course/", include("assessment.urls")),
     path("<int:pk>/", CourseView.as_view()),
     path("public_all/", PublicCourseListView.as_view()),
     path("create/", CreateCourseAPIView.as_view()),
     path("my_all", OwnCourseListView.as_view()),
+    path("", include('assessment.urls')),
 ]

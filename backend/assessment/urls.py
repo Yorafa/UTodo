@@ -1,8 +1,11 @@
 from django.urls import path
 from django.urls.conf import include
-from assessment.views import AssessmentDetailView
+from assessment.views.assessment import AssessmentView, CourseAssessmentListView
+from assessment.views.create_assessment import CreateAssessmentAPIView
 
 urlpatterns = [
-    path("assessment/", include("task.urls")),
-    path("assessment/<int:pk>", AssessmentDetailView.as_view())
+    path("assessment/<int:pk>", AssessmentView.as_view()),
+    path("<int:pk>/assessments", CourseAssessmentListView.as_view()),
+    path("<int:pk>/create_assessment", CreateAssessmentAPIView.as_view()),
+    path('', include('task.urls')),
 ]
