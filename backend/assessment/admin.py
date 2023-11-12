@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Assessment
+from assessment.models import Assessment
 from task.admin import TaskInline
 # Register your models here.
 

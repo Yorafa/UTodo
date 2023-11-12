@@ -18,7 +18,6 @@ class Course(models.Model):
     year = models.IntegerField(default=datetime.now().year)
     semester = models.CharField(max_length=6, choices=SEMESTER_CHOICES, default='Fall')
     is_public = models.BooleanField(default=False)
-    is_show_grade = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
 
     def __str__(self):
@@ -28,13 +27,9 @@ class Course(models.Model):
         assessments = self.assessments.all()
         total_now = 0
         total = 0
-        print("i'm here")
         for assessment in assessments:
-            if assessment.is_counted:
-                total += assessment.grade_total
-                total_now += assessment.grade_now
-        print(total_now)
-        print(total)
+            total += assessment.grade_total
+            total_now += assessment.grade_now
         self.grade_now = total_now
         self.grade_total = total
         self.save()
