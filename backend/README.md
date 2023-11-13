@@ -37,7 +37,7 @@ pip install -r requirements.txt
 - [x] PUT/DELETE/GET `/course/assessment/task/<int: id>/` : update/delete/get a task by id
 - [x] GET `/course/assessment/<int: id>/tasks/` : get all tasks of a assessment by id
 - [x] GET `account/api/token/` : get token
-- [x] POST/GET `account/ login/` : login
+- [x] POST/GET `account/ signin/` : login
 - [x] POST/GET `account/ signup/` : signup
-- [x] POST/GET `account/ logout/` : logout
+- [x] POST/GET `account/ signout/` : logout
 - [x] GET `account/ profile/` : get profile
