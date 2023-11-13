@@ -7,4 +7,25 @@ Todo list for university courses
 
 ## TODO List
 
-- [ ] login, logout, edit, profile, register
+- [ ] Frontend
+  - [ ] Login
+  - [ ] Signup
+  - [ ] Logout
+  - [ ] Profile
+  - [ ] Course
+    - [ ] Create
+    - [ ] Update
+    - [ ] Delete
+    - [ ] Get
+    - [ ] Like
+    - [ ] Unlike
+    - [ ] Assessment
+      - [ ] Create
+      - [ ] Update
+      - [ ] Delete
+      - [ ] Get
+      - [ ] Task
+        - [ ] Create
+        - [ ] Update
+        - [ ] Delete
+        - [ ] Get
