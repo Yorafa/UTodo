@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from account.serializers.login import LoginSerializer
+from account.serializers.signin import SigninSerializer
 from account.serializers.signup import SignupSerializer
 from account.serializers.profile import ProfileSerializer
 from rest_framework import generics, permissions
@@ -9,8 +9,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 
 # Create your views here.
-class LoginView(generics.CreateAPIView):
-    serializer_class = LoginSerializer
+class SigninView(generics.CreateAPIView):
+    serializer_class = SigninSerializer
     permission_classes = (permissions.AllowAny,)
     
     def get(self, request, *args, **kwargs):
@@ -35,7 +35,7 @@ class SignupView(generics.CreateAPIView):
         serializer.save()
         return Response("You have successfully signed in")
     
-class LogoutView(APIView):
+class SignoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     
     def get(self, request, *args, **kwargs):

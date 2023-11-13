@@ -2,7 +2,7 @@ from account.admin import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-class LoginSerializer(serializers.ModelSerializer):
+class SigninSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=20, min_length=4, required=True)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     
