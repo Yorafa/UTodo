@@ -1,10 +1,17 @@
 from django.urls import path
-from django.urls.conf import include
-from .views.detail import CourseDetailView
-from .views.course_list import CourseList
+from django.urls import include
+from course.views.course import CourseView, OwnCourseListView
+from course.views.public_course_list import PublicCourseListView
+from course.views.create_course import CreateCourseAPIView
+from course.views.like_course import LikeCourseAPIView, UnLikeCourseAPIView
+
 
 urlpatterns = [
-    # path("course/", include("assessment.urls")),
-    path("<int:pk>/", CourseDetailView.as_view()),
-    path("all/", CourseList.as_view()),
+    path("<int:pk>/", CourseView.as_view()),
+    path("public_all/", PublicCourseListView.as_view()),
+    path("create/", CreateCourseAPIView.as_view()),
+    path("my_all/", OwnCourseListView.as_view()),
+    path('course/<int:pk>/like/', LikeCourseAPIView.as_view()),
+    path('course/<int:pk>/unlike/', UnLikeCourseAPIView.as_view()),
+    path("", include('assessment.urls')),
 ]

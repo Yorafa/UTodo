@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from course.models import Course
-from course.serializers.detail import CourseSerializer
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     
-    courses = CourseSerializer(many=True)
 
     class Meta:
         model=User
@@ -25,4 +23,3 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.count = validated_data.get('count', instance.count)
         instance.save()
         return instance
-    
