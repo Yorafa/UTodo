@@ -31,9 +31,11 @@ class SignupView(generics.CreateAPIView):
     
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response("You have successfully signed in")
+        if serializer.is_valid():
+            serializer.save()
+            return Response("You have successfully signed in", status=201)
+        else:
+            return Response(serializer.errors, status=400)
     
 class SignoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)

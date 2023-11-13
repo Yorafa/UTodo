@@ -8,12 +8,12 @@ import Error404 from './pages/Error404';
 import MainPage from './pages/MainPage';
 import SignIn from './pages/SigninPage';
 import SignUp from './pages/SignupPage';
+import PublicCoursesPage from './pages/PublicCoursesPage';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
-        errorElement: <Error404 />,
         children: [
             {
                 path: '',
@@ -26,6 +26,10 @@ const router = createBrowserRouter([
             {
                 path: 'signup',
                 element: <SignUp />,
+            },
+            {
+                path: 'publiccourses',
+                element: <PublicCoursesPage />,
             },
             {
                 path: '*',

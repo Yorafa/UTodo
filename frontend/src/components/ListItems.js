@@ -6,7 +6,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 // import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 // import PeopleIcon from '@mui/icons-material/People';
-// import BarChartIcon from '@mui/icons-material/BarChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
@@ -22,7 +22,13 @@ export const mainListItems = (
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>
-      <ListItemText primary="All Courses" />
+      <ListItemText primary="Your Courses" />
+    </ListItemButton>
+    <ListItemButton>
+      <ListItemIcon>
+        <BarChartIcon />
+      </ListItemIcon>
+      <ListItemText primary="All Public Courses" />
     </ListItemButton>
   </React.Fragment>
 );

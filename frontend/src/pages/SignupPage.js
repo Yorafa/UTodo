@@ -11,14 +11,34 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { signup_api } from '../utils/api';
+
 
 export default function SignUp() {
+    const [username, setUsername] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [firstname, setFirstname] = React.useState("");
+    const [lastname, setLastname] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [password_confirmation, setPasswordConfirmation] = React.useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+        // TODO: Add validation, display error message
+        signup_api({ username, email, firstname, lastname, password, password_confirmation }).then((res) => {
+            console.log(res);
+            if (res.status === 201) {
+                console.log('Sign Up successful');
+            } else {
+                console.error('Sign Up failed');
+            }
+        }).catch((err) => {
+            if (err.response) {
+                console.log(err.response.status);
+                console.log(err.response.data);
+            }else{
+                console.log("other error");
+                console.log(err);
+            }
         });
     };
 
@@ -49,6 +69,8 @@ export default function SignUp() {
                         name="username"
                         autoComplete="username"
                         autoFocus
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -59,6 +81,8 @@ export default function SignUp() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -69,6 +93,8 @@ export default function SignUp() {
                         name="firstname"
                         autoComplete="firstname"
                         autoFocus
+                        value={firstname}
+                        onChange={(e) => setFirstname(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -79,6 +105,8 @@ export default function SignUp() {
                         name="lastname"
                         autoComplete="lastname"
                         autoFocus
+                        value={lastname}
+                        onChange={(e) => setLastname(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -89,16 +117,20 @@ export default function SignUp() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <TextField
                         margin="normal"
                         required
                         fullWidth
-                        name="confirm_password"
+                        name="password_confirmation"
                         label="Password Confirmation"
                         type="password"
-                        id="confirm_password"
+                        id="password_confirmation"
                         autoComplete="current-password"
+                        value={password_confirmation}
+                        onChange={(e) => setPasswordConfirmation(e.target.value)}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}

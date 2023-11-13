@@ -7,12 +7,13 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-// import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-// import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './ListItems';
-
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import { signout_api } from '../utils/api';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -64,6 +65,20 @@ function Nav() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
+    const [auth, setAuth] = React.useState(true);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleChange = (event) => {
+        setAuth(event.target.checked);
+    };
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <>
@@ -94,12 +109,40 @@ function Nav() {
                     >
                         Dashboard
                     </Typography>
-                    <IconButton color="inherit">
-                        {/* TODO: signin -> notification else signin */}
-                        {/* <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge> */}
-                    </IconButton>
+                    {/* TODO: signin -> notification and signout else signin */}
+                    {auth && (
+                        <div>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                <MenuItem onClick={handleClose}>Sign out</MenuItem>
+                            </Menu>
+                        </div>
+                    )}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
