@@ -5,11 +5,62 @@ const apiClient = axios.create({
     timeout: 10000
 })
 
+apiClient.interceptors.request.use(
+    (config) => {
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+    },
+    (error) => {
+        console.log(error);
+        return Promise.reject(error);
+    }
+);
+
+apiClient.interceptors.response.use(
+    (response) => {
+        console.log(response);
+        return response;
+    },
+    async (error) => {
+        // 对响应错误做些什么
+        if (error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
+            // Access Token 过期，尝试使用 Refresh Token 获取新的 Access Token
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (refreshToken) {
+                try {
+                    const refreshResponse = await axios.post('/account/token/refresh/', {
+                        refresh: refreshToken,
+                    });
+                    const newAccessToken = refreshResponse.data.access;
+                    localStorage.setItem('access_token', newAccessToken);
+
+                    // 重新发送之前的请求
+                    error.config.__isRetryRequest = true;
+                    error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+                    return apiClient(error.config);
+                } catch (refreshError) {
+                    console.error('Refresh token request failed', refreshError);
+                    // 处理 Refresh Token 失效的情况，可能需要用户重新登录
+                    signout();
+                    alert('token invalid, please login again');
+                }
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
+const authHeader = {
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+}
 
 apiClient.interceptors.request.use(
     (config) => {
         const userDetails = localStorage.getItem('user');
-        if (userDetails) { 
+        if (userDetails) {
             const token = JSON.parse(userDetails).token;
             config.headers.Authorization = `Bearer ${token}`
         }
@@ -34,15 +85,34 @@ export const refresh_token_api = async (data) => {
     return await apiClient.post('/account/token/refresh', data);
 }
 
-export const get_all_public_courses_api= async () => {
+export const signout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    window.location.href = '/signin';
+}
+
+export const get_all_public_courses_api = async () => {
     return await apiClient.get('/course/public_all/');
 }
 
 // auth routes 
 
-export const signout_api = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+export const refresh_token = async () => {
+    const refresh_token = localStorage.getItem('refresh_token');
+    if (refresh_token === null) return;
+    const data = {
+        refresh: refresh_token
+    }
+    await refresh_token_api(data).then((res) => {
+        if (res.status === 200) {
+            localStorage.setItem('access_token', res.data.access);
+        } else {
+            signout();
+        }
+    }).catch((err) => {
+        console.log(err);
+        signout();
+    });
 }
 
 export const get_profile_api = async () => {
@@ -50,7 +120,9 @@ export const get_profile_api = async () => {
 }
 
 export const create_course_api = async (data) => {
-    return await apiClient.post('/course/create/', data);
+    return await apiClient.post('/course/create/', {
+        headers: authHeader
+    }, data);
 }
 
 export const get_all_my_courses_api = async () => {
