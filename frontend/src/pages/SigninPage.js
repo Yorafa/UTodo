@@ -22,8 +22,8 @@ export default function SignIn() {
         signin_api({ username, password }).then((res) => {
             console.log(res);
             if (res.status === 200) {
-                localStorage.setItem('user', JSON.stringify(res.data));
-                window.location.href = '/';
+                // localStorage.setItem('user', JSON.stringify(res.data));
+                // window.location.href = '/';
             }
         }
         ).catch((err) => {

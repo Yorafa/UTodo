@@ -14,6 +14,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { signout_api } from '../utils/api';
+import { useLocation } from 'react-router-dom';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -67,6 +68,28 @@ function Nav() {
     };
     const [auth, setAuth] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [title, setTitle] = React.useState("Loading...");
+    const location = useLocation();
+
+    React.useEffect(() => {
+        switch (location.pathname) {
+            case '/':
+                document.title = 'Dashboard';
+                break;
+            case '/publiccourses':
+                document.title = 'Public Courses';
+                break;
+            case '/signin':
+                document.title = 'Sign In';
+                break;
+            case '/signup':
+                document.title = 'Sign Up';
+                break;
+            default:
+                document.title = '404 NOT FOUND'; // 默认标题
+        }
+        setTitle(document.title);
+    }, [location.pathname]);
 
     const handleChange = (event) => {
         setAuth(event.target.checked);
@@ -107,7 +130,7 @@ function Nav() {
                         noWrap
                         sx={{ flexGrow: 1 }}
                     >
-                        Dashboard
+                        {title}
                     </Typography>
                     {/* TODO: signin -> notification and signout else signin */}
                     {auth && (

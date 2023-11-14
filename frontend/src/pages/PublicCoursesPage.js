@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -10,15 +10,15 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { get_all_public_courses_api } from '../utils/api';
 
-// TODO: Paging of cards, search, filter, sort, etc.
+// TODO: filter, sort, etc.
 
 export default function PublicCoursesPage() {
-    const [courses, setCourses] = React.useState([]);
-    const [filteredCourses, setFilteredCourses] = React.useState([]);
-    const [searchText, setSearchText] = React.useState('');
-    const [page, setPage] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(1);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    const [courses, setCourses] = useState([]);
+    const [filteredCourses, setFilteredCourses] = useState([]);
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
+    const [pageSize, setPageSize] = useState(12);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -29,25 +29,30 @@ export default function PublicCoursesPage() {
         setPage(1);
     };
 
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-        setPage(1);
-    };
-
-    React.useEffect(() => {
+    useEffect(() => {
         const getCourseData = async () => {
             const res = await get_all_public_courses_api();
             if (res.status === 200) {
-                setCourses(res.data.results);
-                setFilteredCourses(res.data.results);
+                setCourses(res.data);
+                setFilteredCourses(res.data);
             }
         };
         getCourseData();
     }, []); // one-time fetch
 
+    useEffect(() => {
+        const filtered = courses.filter((course) =>
+            course.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedCourses = filtered.slice(startIndex, endIndex);
+        setLastPage(Math.ceil(filtered.length / pageSize));
+        setFilteredCourses(paginatedCourses);
+    }, [courses, page, pageSize, searchTerm]);
+
     return (
         <main>
-            {/* Hero unit */}
             <Box
                 sx={{
                     bgcolor: 'background.paper',
@@ -69,11 +74,26 @@ export default function PublicCoursesPage() {
                         You can also public your course by simply
                         clicking the "is public" checkbox on the course
                         you want to public.
+                        You can change pagination size to show more/less courses in one page.
                     </Typography>
                 </Container>
             </Box>
             <Container sx={{ py: 8 }} maxWidth="md">
-                {/* End hero unit */}
+                <TextField
+                    label="Search Courses"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <TextField
+                    label="Pagination Size"
+                    variant="outlined"
+                    type="number"
+                    value={pageSize}
+                    onChange={handlePageSizeChange}
+                    sx={{ mx: 1 }}
+                />
+                <Grid sx={{ mt: 4 }}></Grid>
                 <Grid container spacing={4}>
                     {filteredCourses.map((card) => (
                         <Grid item key={"course" + card.id} xs={12} sm={6} md={4}>
@@ -105,7 +125,7 @@ export default function PublicCoursesPage() {
                         onClick={() => handlePageChange(page - 1)}
                         disabled={page === 1}
                     >
-                        Previous Page
+                        Prev Page
                     </Button>
                     {/* center the page number */}
                     <Typography variant="body2" sx={{ mx: 2, textAlign: 'center' }}>
@@ -114,18 +134,10 @@ export default function PublicCoursesPage() {
                     <Button
                         variant="outlined"
                         onClick={() => handlePageChange(page + 1)}
-                        disabled={filteredCourses.length < pageSize}
+                        disabled={page === lastPage}
                     >
                         Next Page
                     </Button>
-                    <TextField
-                        label="Page Size"
-                        variant="outlined"
-                        type="number"
-                        value={pageSize}
-                        onChange={handlePageSizeChange}
-                        sx={{ mx: 2 }}
-                    />
                 </Grid>
             </Container>
         </main>

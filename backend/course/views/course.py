@@ -9,6 +9,7 @@ from rest_framework.response import Response
 class CourseView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
@@ -43,6 +44,7 @@ class CourseView(generics.RetrieveUpdateDestroyAPIView):
 class OwnCourseListView(generics.ListAPIView):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Course.objects.filter(user=self.request.user)

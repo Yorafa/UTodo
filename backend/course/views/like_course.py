@@ -7,7 +7,8 @@ from course.models import Course
 class LikeCourseAPIView(generics.UpdateAPIView):
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
-
+    pagination_class = None
+    
     def patch(self, request, *args, **kwargs):
         course = self.get_object()
         user = self.request.user
