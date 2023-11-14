@@ -8,7 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields = ('username', 'courses')
+        fields = ('username', 'last_login', 'first_name', 'last_name', 'email', 'date_joined')
         
     def create(self, validated_data):
         courses_data = validated_data.pop('course')
