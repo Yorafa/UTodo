@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { get_all_public_courses_api } from '../utils/api';
+import Toolbar from '@mui/material/Toolbar';
 
 // TODO: filter, sort, etc.
 
@@ -93,7 +94,7 @@ export default function PublicCoursesPage() {
                     onChange={handlePageSizeChange}
                     sx={{ mx: 1 }}
                 />
-                <Grid sx={{ mt: 4 }}></Grid>
+                <Toolbar />
                 <Grid container spacing={4}>
                     {filteredCourses.map((card) => (
                         <Grid item key={"course" + card.id} xs={12} sm={6} md={4}>

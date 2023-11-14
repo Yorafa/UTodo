@@ -13,8 +13,9 @@ import { mainListItems, secondaryListItems } from './ListItems';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { signout_api } from '../utils/api';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { signout_api, refresh_token_api } from '../utils/api';
+
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -66,10 +67,23 @@ function Nav() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    const [auth, setAuth] = React.useState(true);
+    const [auth, setAuth] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [title, setTitle] = React.useState("Loading...");
     const location = useLocation();
+
+    React.useEffect(() => {
+        if (localStorage.getItem('access_token') !== null && localStorage.getItem('refresh_token') !== null) {
+            refresh_token_api({ refresh: localStorage.getItem('refresh_token') }).then((res) => {
+                if (res.status === 200) {
+                    localStorage.setItem('access_token', res.data.access);
+                    setAuth(true);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    }, []);
 
     React.useEffect(() => {
         switch (location.pathname) {
@@ -86,14 +100,10 @@ function Nav() {
                 document.title = 'Sign Up';
                 break;
             default:
-                document.title = '404 NOT FOUND'; // 默认标题
+                document.title = '404 NOT FOUND';
         }
         setTitle(document.title);
     }, [location.pathname]);
-
-    const handleChange = (event) => {
-        setAuth(event.target.checked);
-    };
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -101,6 +111,12 @@ function Nav() {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const signout = () => {
+        signout_api();
+        setAnchorEl(null);
+        setAuth(false);
     };
 
     return (
@@ -133,39 +149,50 @@ function Nav() {
                         {title}
                     </Typography>
                     {/* TODO: signin -> notification and signout else signin */}
-                    {auth && (
-                        <div>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
-                                <MenuItem onClick={handleClose}>Sign out</MenuItem>
-                            </Menu>
-                        </div>
-                    )}
+                    <div>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            {auth ? (
+                                <div>
+                                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                    <MenuItem onClick={handleClose}>My account</MenuItem>
+                                    <MenuItem onClick={signout}>Sign Out</MenuItem>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Link to="/signin" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <MenuItem onClick={handleClose}>Sign In</MenuItem>
+                                    </Link>
+                                    <Link to="/signup" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <MenuItem onClick={handleClose}>Sign Up</MenuItem>
+                                    </Link>
+                                </div>
+                            )}
+                        </Menu>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>

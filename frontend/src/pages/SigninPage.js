@@ -16,20 +16,19 @@ import { signin_api } from '../utils/api';
 export default function SignIn() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
+
     const handleSubmit = (event) => {
         event.preventDefault();
         // TODO: Add validation, display error message
         signin_api({ username, password }).then((res) => {
-            console.log(res);
             if (res.status === 200) {
-                // localStorage.setItem('user', JSON.stringify(res.data));
-                // window.location.href = '/';
+                localStorage.setItem('access_token', res.data.access);
+                localStorage.setItem('refresh_token', res.data.refresh);
+                window.location.href = '/';
             }
-        }
-        ).catch((err) => {
+        }).catch((err) => {
             console.log(err);
         });
-
     };
 
     return (

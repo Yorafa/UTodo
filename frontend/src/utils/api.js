@@ -30,8 +30,8 @@ export const signin_api = async (data) => {
     return await apiClient.post('/account/signin/', data);
 }
 
-export const signin_api_token = async (data) => {
-    return await apiClient.post('/account/api/token/', data);
+export const refresh_token_api = async (data) => {
+    return await apiClient.post('/account/token/refresh', data);
 }
 
 export const get_all_public_courses_api= async () => {
@@ -40,8 +40,9 @@ export const get_all_public_courses_api= async () => {
 
 // auth routes 
 
-export const signout_api = async () => {
-    return await apiClient.post('/account/signout/');
+export const signout_api = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
 }
 
 export const get_profile_api = async () => {
