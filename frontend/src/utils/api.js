@@ -129,6 +129,10 @@ export const get_all_my_courses_api = async () => {
     return await apiClient.get('/course/my_all/');
 }
 
+export const get_course_on_list_api = async () => {
+    return await apiClient.get('/course/on_list/');
+}
+
 export const get_course_by_id_api = async (id) => {
     return await apiClient.get(`/course/${id}/`);
 }

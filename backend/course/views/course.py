@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from course.models import Course
-from course.serializers.course import CourseSerializer
+from course.serializers.course import CourseSerializer, OnListCourseSerializer
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -48,3 +48,11 @@ class OwnCourseListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Course.objects.filter(user=self.request.user)
+    
+class OnListCourseListView(generics.ListAPIView):
+    serializer_class = OnListCourseSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+
+    def get_queryset(self):
+        return Course.objects.filter(is_on_list=True, user = self.request.user)

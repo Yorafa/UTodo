@@ -9,12 +9,49 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems, secondaryListItems } from './ListItems';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Link, useLocation } from 'react-router-dom';
-import { signout, refresh_token } from '../utils/api';
+import { signout, refresh_token, get_course_on_list_api } from '../utils/api';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LayersIcon from '@mui/icons-material/Layers';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
+
+const mainListItems = (
+    <React.Fragment>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+            </ListItemButton>
+        </Link>
+        <Link to="/myallcourses" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <LayersIcon />
+                </ListItemIcon>
+                <ListItemText primary="Your Courses" />
+            </ListItemButton>
+        </Link>
+        <Link to="/publiccourses" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <BarChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="All Public Courses" />
+            </ListItemButton>
+        </Link>
+    </React.Fragment>
+);
 
 const drawerWidth = 240;
 
@@ -70,13 +107,24 @@ function Nav() {
     const [auth, setAuth] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [title, setTitle] = React.useState("Loading...");
+    const [courses, setCourses] = React.useState([]);
+
     const location = useLocation();
 
     React.useEffect(() => {
         refresh_token();
         if (localStorage.getItem('access_token') !== null) {
             setAuth(true);
-        };
+            get_course_on_list_api().then((res) => {
+                if (res.status === 200) {
+                    console.log(res.data);
+                    setCourses(res.data);
+                }
+            }
+            ).catch((err) => {
+                console.log(err);
+            });
+        }
     }, []);
 
     React.useEffect(() => {
@@ -100,7 +148,7 @@ function Nav() {
                 document.title = '404 NOT FOUND';
         }
         setTitle(document.title);
-    }, [document.title]);
+    }, [location.pathname]);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -175,7 +223,7 @@ function Nav() {
                             {auth ? (
                                 <div>
                                     <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
                                     </Link>
                                     {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
                                     <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
@@ -211,7 +259,21 @@ function Nav() {
                 <List component="nav">
                     {mainListItems}
                     <Divider sx={{ my: 1 }} />
-                    {secondaryListItems}
+                    {!auth ? null : (
+                        <>
+                            <ListSubheader component="div" inset>
+                                Listed Courses
+                            </ListSubheader>
+                            {courses.map((course) => (
+                                <ListItemButton key={"course" + course.id}>
+                                    <ListItemIcon>
+                                        <AssignmentIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={course.year + " " + course.semester[0] + " " + course.name} />
+                                </ListItemButton>
+                            ))}
+                        </>)
+                    }
                 </List>
             </Drawer>
         </>

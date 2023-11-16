@@ -28,6 +28,7 @@ pip install -r requirements.txt
 - [x] PUT/DELETE/GET `/course/<int: id>` : update/delete/get a course by id
 - [x] GET `/course/public_all/` : get all public courses
 - [x] GET `/course/my_all/` : get all courses of current user
+- [x] GET `/course/on_list/` : get all courses of current user that show in sidebar
 - [x] PATCH/GET `/course/<int: id>/like/` : like a course or get who like this course
 - [x] PATCH `/course/<int: id>/unlike/` : un-like a course
 - [x] POST `/course/<int: id>/create/` : create a assessment to a course

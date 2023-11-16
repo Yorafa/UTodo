@@ -18,6 +18,7 @@ class Course(models.Model):
     year = models.IntegerField(default=datetime.now().year)
     semester = models.CharField(max_length=6, choices=SEMESTER_CHOICES, default='Fall')
     is_public = models.BooleanField(default=False)
+    is_on_list = models.BooleanField(default=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     likes = models.ManyToManyField(User, related_name='liked_courses', blank=True)
