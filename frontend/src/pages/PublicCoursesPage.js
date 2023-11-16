@@ -45,6 +45,7 @@ export default function PublicCoursesPage() {
         const filtered = courses.filter((course) =>
             course.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
+        if (pageSize <= 0) setPageSize(1);
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const paginatedCourses = filtered.slice(startIndex, endIndex);

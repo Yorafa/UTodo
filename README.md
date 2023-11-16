@@ -8,9 +8,9 @@ Todo list for university courses
 ## TODO List
 
 - [ ] Frontend
-  - [ ] Login
-  - [ ] Signup
-  - [ ] Logout
+  - [x] Signin
+  - [x] Signup
+  - [x] Signout
   - [ ] Profile
   - [ ] Course
     - [ ] Create

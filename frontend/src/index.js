@@ -9,7 +9,8 @@ import MainPage from './pages/MainPage';
 import SignIn from './pages/SigninPage';
 import SignUp from './pages/SignupPage';
 import PublicCoursesPage from './pages/PublicCoursesPage';
-
+import ProfilePage from './pages/ProfilePage';
+import AllCoursesPage from './pages/AllCoursesPage';
 const router = createBrowserRouter([
     {
         path: '/',
@@ -30,6 +31,14 @@ const router = createBrowserRouter([
             {
                 path: 'publiccourses',
                 element: <PublicCoursesPage />,
+            },
+            {
+                path: 'profile',
+                element: <ProfilePage />,
+            },
+            {
+                path: 'myallcourses',
+                element: <AllCoursesPage />,
             },
             {
                 path: '*',

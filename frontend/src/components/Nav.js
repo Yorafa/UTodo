@@ -14,7 +14,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Link, useLocation } from 'react-router-dom';
-import { signout_api, refresh_token_api } from '../utils/api';
+import { signout, refresh_token } from '../utils/api';
 
 const drawerWidth = 240;
 
@@ -73,16 +73,10 @@ function Nav() {
     const location = useLocation();
 
     React.useEffect(() => {
-        if (localStorage.getItem('access_token') !== null && localStorage.getItem('refresh_token') !== null) {
-            refresh_token_api({ refresh: localStorage.getItem('refresh_token') }).then((res) => {
-                if (res.status === 200) {
-                    localStorage.setItem('access_token', res.data.access);
-                    setAuth(true);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
+        refresh_token();
+        if (localStorage.getItem('access_token') !== null) {
+            setAuth(true);
+        };
     }, []);
 
     React.useEffect(() => {
@@ -99,11 +93,14 @@ function Nav() {
             case '/signup':
                 document.title = 'Sign Up';
                 break;
+            case '/profile':
+                document.title = 'Profile';
+                break;
             default:
                 document.title = '404 NOT FOUND';
         }
         setTitle(document.title);
-    }, [location.pathname]);
+    }, [document.title]);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -113,8 +110,8 @@ function Nav() {
         setAnchorEl(null);
     };
 
-    const signout = () => {
-        signout_api();
+    const handleSignout = () => {
+        signout();
         setAnchorEl(null);
         setAuth(false);
     };
@@ -177,9 +174,11 @@ function Nav() {
                         >
                             {auth ? (
                                 <div>
+                                    <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                                    <MenuItem onClick={signout}>Sign Out</MenuItem>
+                                    </Link>
+                                    {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                                    <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
                                 </div>
                             ) : (
                                 <div>

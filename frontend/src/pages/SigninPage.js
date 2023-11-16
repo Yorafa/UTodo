@@ -28,6 +28,11 @@ export default function SignIn() {
             }
         }).catch((err) => {
             console.log(err);
+            if (err.response) {
+                console.log(err.response.status);
+                console.log(err.response.data);
+                alert(err.response.data.non_field_errors[0]);
+            }
         });
     };
 

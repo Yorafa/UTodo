@@ -20,12 +20,14 @@ export const mainListItems = (
                 <ListItemText primary="Dashboard" />
             </ListItemButton>
         </Link>
-        <ListItemButton>
-            <ListItemIcon>
-                <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="Your Courses" />
-        </ListItemButton>
+        <Link to="/myallcourses" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <LayersIcon />
+                </ListItemIcon>
+                <ListItemText primary="Your Courses" />
+            </ListItemButton>
+        </Link>
         <Link to="/publiccourses" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>

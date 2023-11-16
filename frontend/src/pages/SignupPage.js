@@ -24,10 +24,11 @@ export default function SignUp() {
     const handleSubmit = (event) => {
         event.preventDefault();
         // TODO: Add validation, display error message
-        signup_api({ username, email, firstname, lastname, password, password_confirmation }).then((res) => {
-            console.log(res);
+        signup_api({ username, email, first_name:firstname, last_name:lastname, password, password_confirmation }).then((res) => {
             if (res.status === 201) {
                 console.log('Sign Up successful');
+                alert("Sign Up successful, please login");
+                window.location.href = "/signin";
             } else {
                 console.error('Sign Up failed');
             }
