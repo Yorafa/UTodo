@@ -117,7 +117,6 @@ function Nav() {
             setAuth(true);
             get_course_on_list_api().then((res) => {
                 if (res.status === 200) {
-                    console.log(res.data);
                     setCourses(res.data);
                 }
             }
@@ -265,12 +264,14 @@ function Nav() {
                                 Listed Courses
                             </ListSubheader>
                             {courses.map((course) => (
-                                <ListItemButton key={"course" + course.id}>
+                                <Link to={"/course/" + course.id} style={{ textDecoration: 'none', color: 'inherit' }} key={"course" + course.id}>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <AssignmentIcon />
                                     </ListItemIcon>
                                     <ListItemText primary={course.year + " " + course.semester[0] + " " + course.name} />
                                 </ListItemButton>
+                                </Link>
                             ))}
                         </>)
                     }

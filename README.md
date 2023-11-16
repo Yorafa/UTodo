@@ -24,8 +24,3 @@ Todo list for university courses
       - [ ] Update
       - [ ] Delete
       - [ ] Get
-      - [ ] Task
-        - [ ] Create
-        - [ ] Update
-        - [ ] Delete
-        - [ ] Get

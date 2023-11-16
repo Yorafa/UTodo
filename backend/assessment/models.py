@@ -3,6 +3,7 @@ from course.models import Course
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.utils import timezone
 
 ACCESS_CHOICES = (
     ('Term Tests', 'Term Tests'),
@@ -17,8 +18,12 @@ ACCESS_CHOICES = (
 class Assessment(models.Model):
     id = models.AutoField(primary_key=True)
     assessment_type = models.CharField(max_length=11, choices=ACCESS_CHOICES)
+    title = models.CharField(max_length=200)
+    due_date = models.DateTimeField(default=timezone.now)
     grade_now = models.FloatField(default=0.0)
     grade_total = models.FloatField(default=0.0)
+    description = models.TextField(blank=True, null=True)
+    is_counted = models.BooleanField(default=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessments')
 
     def save(self, *args, **kwargs):
@@ -34,19 +39,6 @@ class Assessment(models.Model):
 
     def __str__(self):
         return str(self.course) + ' ' + self.get_assessment_type_display()
-
-    def update_grade(self):
-        tasks = self.tasks.all()
-        total_now = 0
-        total = 0
-        for task in tasks:
-            if task.is_counted:
-                total += task.grade_total
-                total_now += task.grade_now
-        self.grade_now = total_now
-        self.grade_total = total
-        self.save()
-        self.course.update_grade()
 
 @receiver(post_delete, sender=Assessment)
 def assessment_post_delete(sender, instance, **kwargs):

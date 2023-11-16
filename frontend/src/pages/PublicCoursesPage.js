@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { get_all_public_courses_api } from '../utils/api';
 import Toolbar from '@mui/material/Toolbar';
+import Pagination from '@mui/material/Pagination';
 
 // TODO: filter, sort, etc.
 
@@ -122,24 +123,8 @@ export default function PublicCoursesPage() {
                     ))}
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
-                    <Button
-                        variant="outlined"
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page === 1}
-                    >
-                        Prev Page
-                    </Button>
                     {/* center the page number */}
-                    <Typography variant="body2" sx={{ mx: 2, textAlign: 'center' }}>
-                        Page: {page}
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page === lastPage}
-                    >
-                        Next Page
-                    </Button>
+                    <Pagination count={lastPage} shape="rounded" page={page} onChange={(e, newPage) => handlePageChange(newPage)} />
                 </Grid>
             </Container>
         </main>

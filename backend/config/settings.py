@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "course",
     "assessment",
-    "task",
     "account",
 ]
 

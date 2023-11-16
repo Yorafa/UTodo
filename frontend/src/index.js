@@ -11,6 +11,8 @@ import SignUp from './pages/SignupPage';
 import PublicCoursesPage from './pages/PublicCoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import AllCoursesPage from './pages/AllCoursesPage';
+import CoursesPage from './pages/CoursePage';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: 'myallcourses',
                 element: <AllCoursesPage />,
+            },
+            {
+                path: 'course/:courseId',
+                element: <CoursesPage />,
             },
             {
                 path: '*',
