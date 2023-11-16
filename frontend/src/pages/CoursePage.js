@@ -28,11 +28,11 @@ export default function CoursesPage() {
         const getCourseData = async () => {
             const res = await get_course_by_id_api(courseId);
             if (res.status === 200) {
+                console.log(res.data)
                 setCourseInfo(res.data);
             }
             const assRes = await get_all_assessments_of_course_by_id_api(courseId);
             if (assRes.status === 200) {
-                console.log(assRes.data);
                 setAssessments(assRes.data);
             }
         };
@@ -76,32 +76,58 @@ export default function CoursesPage() {
             <Container sx={{ py: 8 }} maxWidth="md">
                 <Toolbar />
                 <Grid container spacing={1}>
-                    {assessments.map((assessment, index) => (
-                        <Accordion key={"assessment" + assessment.id} >
+                    <div>
+                        <Accordion disabled>
                             <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls={"panel" + assessment.id + "bh-header"}
-                                id={"panel" + assessment.id + "bh-header"}
+                                aria-controls="paneldisablea-content"
+                                id="paneldisablea-header"
                             >
-                                <Typography sx={{ width: '33%', flexShrink: 0 }}>{assessment.name}</Typography>
-                                <Typography sx={{ color: 'text.secondary' }}>
-                                    You are currently not an owner
+                                <Typography sx={{ width: '25%', flexShrink: 0 }}>
+                                    Type:Detail
+                                </Typography>
+                                <Typography sx={{ width: '42%', flexShrink: 0 }}>
+                                % of Grade : % of Course
+                                </Typography>
+                                <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                    Due Date
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    
-                                </Typography>
-                            </AccordionDetails>
-                            <AccordionDetails>
-                                <Typography>
-                                    Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus,
-                                    varius pulvinar diam eros in elit. Pellentesque convallis laoreet
-                                    laoreet.
+                                    This details is used to fill up so that all following assessment content
+                                    can align in the max width they can.
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                    ))}
+                        {assessments.map((assessment, index) => (
+                            <Accordion key={"assessment" + assessment.id} >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                >
+                                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                        {assessment.assessment_type + ":" + assessment.title}
+                                    </Typography>
+                                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                        {assessment.grade_total !== 0? (assessment.grade_now/assessment.grade_total + '%') : 0 + '%'} : 
+                                        {assessment.grade_total !== 0 ? (assessment.grade_now/assessment.grade_total * assessment.weight + '%') : 0 + '%'}
+                                    </Typography>
+                                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                        {assessment.due_date.slice(0, 10) + ':' + assessment.due_date.slice(11, 16)}
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+
+                                    </Typography>
+                                </AccordionDetails>
+                                <AccordionDetails>
+                                    <Typography>
+
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                        ))}
+                    </div>
                 </Grid>
             </Container>
         </main>

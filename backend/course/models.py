@@ -31,8 +31,9 @@ class Course(models.Model):
         total_now = 0
         total = 0
         for assessment in assessments:
-            total += assessment.grade_total
-            total_now += assessment.grade_now
+            total += assessment.weight
+            if assessment.grade_total != 0:
+                total_now += assessment.grade_now/assessment.grade_total * assessment.weight
         self.grade_now = total_now
         self.grade_total = total
         self.save()

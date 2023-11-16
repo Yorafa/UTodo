@@ -22,6 +22,7 @@ class Assessment(models.Model):
     due_date = models.DateTimeField(default=timezone.now)
     grade_now = models.FloatField(default=0.0)
     grade_total = models.FloatField(default=0.0)
+    weight = models.FloatField(default=0.0)
     description = models.TextField(blank=True, null=True)
     is_counted = models.BooleanField(default=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessments')
