@@ -94,7 +94,7 @@ export default function PublicCoursesPage() {
                     type="number"
                     value={pageSize}
                     onChange={handlePageSizeChange}
-                    sx={{ mx: 1 }}
+                    sx={{ mx: 7 }}
                 />
                 <Toolbar />
                 <Grid container spacing={4}>

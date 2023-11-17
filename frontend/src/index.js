@@ -12,7 +12,7 @@ import PublicCoursesPage from './pages/PublicCoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import AllCoursesPage from './pages/AllCoursesPage';
 import CoursesPage from './pages/CoursePage';
-
+import CourseFormPage from './pages/CourseFormPage';
 const router = createBrowserRouter([
     {
         path: '/',
@@ -45,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: 'course/:courseId',
                 element: <CoursesPage />,
+            },
+            {
+                path: 'course/form/:view',
+                element: <CourseFormPage />,
             },
             {
                 path: '*',

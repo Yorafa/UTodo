@@ -13,7 +13,7 @@ Todo list for university courses
   - [x] Signout
   - [x] Profile
   - [ ] Course
-    - [ ] Create
+    - [x] Create
     - [ ] Update
     - [ ] Delete
     - [x] Get

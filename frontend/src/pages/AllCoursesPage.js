@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import { get_all_my_courses_api } from '../utils/api';
 import Toolbar from '@mui/material/Toolbar';
 import Pagination from '@mui/material/Pagination';
+import { Link } from 'react-router-dom';
 
 
 // TODO: filter, sort, etc.
@@ -95,8 +96,13 @@ export default function AllCoursesPage() {
                     type="number"
                     value={pageSize}
                     onChange={handlePageSizeChange}
-                    sx={{ mx: 1 }}
+                    sx={{ mx: 7 }}
                 />
+                <Link to="/course/form/create">
+                    <Button variant="contained" size="large" sx={{ py: 1.9 }}>
+                        Create a New Course
+                    </Button>
+                </Link>
                 <Toolbar />
                 <Grid container spacing={4}>
                     {filteredCourses.map((card) => (

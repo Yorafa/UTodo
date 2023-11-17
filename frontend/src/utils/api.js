@@ -52,10 +52,6 @@ apiClient.interceptors.response.use(
     }
 );
 
-const authHeader = {
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-}
-
 apiClient.interceptors.request.use(
     (config) => {
         const userDetails = localStorage.getItem('user');
@@ -119,9 +115,7 @@ export const get_profile_api = async () => {
 }
 
 export const create_course_api = async (data) => {
-    return await apiClient.post('/course/create/', {
-        headers: authHeader
-    }, data);
+    return await apiClient.post('/course/create/', data);
 }
 
 export const get_all_my_courses_api = async () => {

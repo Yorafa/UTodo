@@ -5,7 +5,7 @@ function MainPage() {
     document.title = 'Dashboard';
     return (
         <div>
-            <p>This is where your app's main content will go.</p>
+            <p>Feature future.</p>
         </div>
     );
 }
