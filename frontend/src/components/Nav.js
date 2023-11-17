@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState, useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -25,7 +25,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 
 
 const mainListItems = (
-    <React.Fragment>
+    <>
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
@@ -50,7 +50,7 @@ const mainListItems = (
                 <ListItemText primary="All Public Courses" />
             </ListItemButton>
         </Link>
-    </React.Fragment>
+    </>
 );
 
 const drawerWidth = 240;
@@ -100,18 +100,18 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 function Nav() {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    const [auth, setAuth] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [title, setTitle] = React.useState("Loading...");
-    const [courses, setCourses] = React.useState([]);
+    const [auth, setAuth] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [title, setTitle] = useState("Loading...");
+    const [courses, setCourses] = useState([]);
 
     const location = useLocation();
 
-    React.useEffect(() => {
+    useEffect(() => {
         refresh_token();
         if (localStorage.getItem('access_token') !== null) {
             setAuth(true);
@@ -126,22 +126,29 @@ function Nav() {
         }
     }, []);
 
-    React.useEffect(() => {
-        switch (location.pathname) {
-            case '/':
+    useEffect(() => {
+        const paths = location.pathname.split('/');
+        switch (paths[1]) {
+            case '':
                 document.title = 'Dashboard';
                 break;
-            case '/publiccourses':
+            case 'publiccourses':
                 document.title = 'Public Courses';
                 break;
-            case '/signin':
+            case 'myallcourses':
+                document.title = 'All Courses';
+                break;
+            case 'signin':
                 document.title = 'Sign In';
                 break;
-            case '/signup':
+            case 'signup':
                 document.title = 'Sign Up';
                 break;
-            case '/profile':
+            case 'profile':
                 document.title = 'Profile';
+                break;
+            case 'course':
+                document.title = 'Course';
                 break;
             default:
                 document.title = '404 NOT FOUND';
@@ -265,12 +272,12 @@ function Nav() {
                             </ListSubheader>
                             {courses.map((course) => (
                                 <Link to={"/course/" + course.id} style={{ textDecoration: 'none', color: 'inherit' }} key={"course" + course.id}>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <AssignmentIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary={course.year + " " + course.semester[0] + " " + course.name} />
-                                </ListItemButton>
+                                    <ListItemButton>
+                                        <ListItemIcon>
+                                            <AssignmentIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary={course.year + " " + course.semester[0] + " " + course.name} />
+                                    </ListItemButton>
                                 </Link>
                             ))}
                         </>)

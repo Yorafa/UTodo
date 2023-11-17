@@ -11,16 +11,16 @@ Todo list for university courses
   - [x] Signin
   - [x] Signup
   - [x] Signout
-  - [ ] Profile
+  - [x] Profile
   - [ ] Course
     - [ ] Create
     - [ ] Update
     - [ ] Delete
-    - [ ] Get
+    - [x] Get
     - [ ] Like
     - [ ] Unlike
     - [ ] Assessment
       - [ ] Create
       - [ ] Update
       - [ ] Delete
-      - [ ] Get
+      - [x] Get

@@ -17,12 +17,7 @@ import { useParams } from 'react-router-dom';
 export default function CoursesPage() {
     const [courseInfo, setCourseInfo] = useState({});
     const [assessments, setAssessments] = useState([]);
-    const [expanded, setExpanded] = useState(false);
     const { courseId } = useParams();
-
-    const handleChange = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    };
 
     useEffect(() => {
         const getCourseData = async () => {
@@ -82,11 +77,11 @@ export default function CoursesPage() {
                                 aria-controls="paneldisablea-content"
                                 id="paneldisablea-header"
                             >
-                                <Typography sx={{ width: '25%', flexShrink: 0 }}>
+                                <Typography sx={{ width: '20%', flexShrink: 0 }}>
                                     Type:Detail
                                 </Typography>
-                                <Typography sx={{ width: '42%', flexShrink: 0 }}>
-                                % of Grade : % of Course
+                                <Typography sx={{ width: '45%', flexShrink: 0 }}>
+                                Grade : % of Course : Weight
                                 </Typography>
                                 <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                     Due Date
@@ -108,8 +103,10 @@ export default function CoursesPage() {
                                         {assessment.assessment_type + ":" + assessment.title}
                                     </Typography>
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                                        {assessment.grade_total !== 0? (assessment.grade_now/assessment.grade_total + '%') : 0 + '%'} : 
-                                        {assessment.grade_total !== 0 ? (assessment.grade_now/assessment.grade_total * assessment.weight + '%') : 0 + '%'}
+                                        {assessment.grade_total !== 0? ((assessment.grade_now/assessment.grade_total).toFixed(2) * 100 + '%') : 0 + '%'}
+                                        {" "} : {" "}
+                                        {assessment.grade_total !== 0 ? (((assessment.grade_now/assessment.grade_total).toFixed(2) * assessment.weight) + '%') : 0 + '%'}
+                                        {" "} : {assessment.weight + '%'}
                                     </Typography>
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                         {assessment.due_date.slice(0, 10) + ':' + assessment.due_date.slice(11, 16)}

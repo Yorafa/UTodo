@@ -1,34 +1,44 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { Dialog, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { signup_api } from '../utils/api';
 
 
 export default function SignUp() {
-    const [username, setUsername] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [firstname, setFirstname] = React.useState("");
-    const [lastname, setLastname] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [password_confirmation, setPasswordConfirmation] = React.useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [password, setPassword] = useState("");
+    const [password_confirmation, setPasswordConfirmation] = useState("");
+    const [onTouch, setOnTouch] = useState(new Map());
+    const [errMsg, setErrMsg] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleSignupSuccess = () => {
+        window.location.href = "/signin";
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        // TODO: Add validation, display error message
         signup_api({ username, email, first_name:firstname, last_name:lastname, password, password_confirmation }).then((res) => {
             if (res.status === 201) {
                 console.log('Sign Up successful');
-                alert("Sign Up successful, please login");
-                window.location.href = "/signin";
+                setErrMsg(["Sign Up successful, please login"]);
+                setOpen(true);
             } else {
                 console.error('Sign Up failed');
             }
@@ -36,12 +46,32 @@ export default function SignUp() {
             if (err.response) {
                 console.log(err.response.status);
                 console.log(err.response.data);
+                const errArr = []
+                Object.entries(err.response.data).forEach(([key, value]) => {
+                    errArr.push(`${key}: ${value}`)
+                });
+                setErrMsg(errArr);
+                setOpen(true);
             }else{
-                console.log("other error");
                 console.log(err);
             }
         });
     };
+
+    const handleTouch = (key) =>{
+        const mp = new Map(onTouch);
+        mp.set(key, true);
+        setOnTouch(mp);
+    };
+
+    useEffect(() => {
+        const mp = new Map();
+        mp.set("username", false);
+        mp.set("email", false);
+        mp.set("password", false);
+        mp.set("password_confirmation", false);
+        setOnTouch(mp);
+    }, []);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -60,8 +90,27 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Sign Up
                 </Typography>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        {errMsg.map((err) => (
+                            <DialogContentText id="alert-dialog-description" key={err}>
+                                {err}
+                            </DialogContentText>
+                        ))}
+                    </DialogContent>
+                    <DialogActions>
+                        {errMsg[0] === "Sign Up successful, please login"? <Button onClick={handleSignupSuccess}>Okay</Button>
+                        :<Button onClick={handleClose}>Retry</Button>}
+                    </DialogActions>
+                </Dialog>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
+                        error={onTouch.get("username") && username.length < 4}
                         margin="normal"
                         required
                         fullWidth
@@ -71,9 +120,14 @@ export default function SignUp() {
                         autoComplete="username"
                         autoFocus
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => {
+                            setUsername(e.target.value)
+                            handleTouch("username");
+                        }}
+                        helperText="Username should be at least 4 letters"
                     />
                     <TextField
+                        error={onTouch.get("email") && !email.match(/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/)}
                         margin="normal"
                         required
                         fullWidth
@@ -83,11 +137,14 @@ export default function SignUp() {
                         autoComplete="email"
                         autoFocus
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                            setEmail(e.target.value)
+                            handleTouch("email");
+                        }}
+                        helperText="Email should be valid in xx@xx.xx format"
                     />
                     <TextField
                         margin="normal"
-                        required
                         fullWidth
                         id="firstname"
                         label="First Name"
@@ -99,7 +156,6 @@ export default function SignUp() {
                     />
                     <TextField
                         margin="normal"
-                        required
                         fullWidth
                         id="lastname"
                         label="Last Name"
@@ -110,6 +166,8 @@ export default function SignUp() {
                         onChange={(e) => setLastname(e.target.value)}
                     />
                     <TextField
+                    
+                        error={onTouch.get("password") && !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/)}
                         margin="normal"
                         required
                         fullWidth
@@ -119,9 +177,22 @@ export default function SignUp() {
                         id="password"
                         autoComplete="current-password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                            handleTouch("password");
+                        }}
+                        helperText={
+                            <>
+                                Password should be at least 8 letters,
+                                <br />
+                                at least one uppercase letter,
+                                <br />
+                                at least one lowercase letter, and one special character
+                            </>
+                        }
                     />
                     <TextField
+                        error={onTouch.get("password_confirmation") && password_confirmation !== password}
                         margin="normal"
                         required
                         fullWidth
@@ -131,12 +202,16 @@ export default function SignUp() {
                         id="password_confirmation"
                         autoComplete="current-password"
                         value={password_confirmation}
-                        onChange={(e) => setPasswordConfirmation(e.target.value)}
+                        onChange={(e) => {
+                            setPasswordConfirmation(e.target.value)
+                            handleTouch("password_confirmation");
+                        }}
+                        helperText="Password confirmation should match password"
                     />
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
-                    />
+                    /> */}
                     <Button
                         type="submit"
                         fullWidth
