@@ -34,13 +34,6 @@ export default function CoursesPage() {
         getCourseData();
     }, [courseId]); // one-time fetch
 
-    // useEffect(() => {
-    //     const filtered = assessment.filter((course) =>
-    //         course.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setFilteredAssessment(filtered);
-    // }, [assessment, searchTerm]);
-
     return (
         <main>
             <Box

@@ -6,7 +6,7 @@ class CourseSerializer(serializers.ModelSerializer):
     assessments = AssessmentIdSerializer(many=True, read_only=True)
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ('id', 'assessments', 'name', 'description', 'university', 'year', 'semester', 'is_public', 'is_on_list', 'likes')
 
 class OnListCourseSerializer(serializers.ModelSerializer):
     class Meta:

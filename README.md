@@ -14,8 +14,8 @@ Todo list for university courses
   - [x] Profile
   - [ ] Course
     - [x] Create
-    - [ ] Update
-    - [ ] Delete
+    - [x] Update
+    - [x] Delete
     - [x] Get
     - [ ] Like
     - [ ] Unlike

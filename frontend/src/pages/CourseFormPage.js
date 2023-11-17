@@ -4,8 +4,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Checkbox, Typography, Container, Grid, TextField, Box } from '@mui/material';
 import { InputLabel, MenuItem, Select, FormControl, FormControlLabel } from '@mui/material';
 import { Dialog, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { create_course_api } from '../utils/api';
-import { useParams, useNavigate } from 'react-router-dom';
+import { create_course_api, update_course_by_id_api, get_course_by_id_api } from '../utils/api';
+import { useParams } from 'react-router-dom';
 
 const semesterList = ["Fall", "Winter", "Summer"];
 
@@ -21,8 +21,7 @@ export default function CourseFormPage() {
     const [errMsg, setErrMsg] = useState([]);
     const [open, setOpen] = useState(false);
 
-    const { view } = useParams();
-    const navigate = useNavigate();
+    const { view, courseId } = useParams();
 
     const handleClose = () => {
         setOpen(false);
@@ -39,25 +38,44 @@ export default function CourseFormPage() {
             is_public: isPublic,
             is_on_list: isOnList
         };
-        console.log(data);
-        create_course_api(data).then((res)=>{
-            console.log(res);
-            const msgArr = ["You are successfully create the course!"]
-            setErrMsg(msgArr);
-            setOpen(true);
-        }).catch((err) => {
-            console.log(err);
-            if (err.response) {
-                console.log(err.response.status);
-                console.log(err.response.data);
-                const errArr = []
-                Object.entries(err.response.data).forEach(([key, value]) => {
-                    errArr.push(`${key}: ${value}`)
-                });
-                setErrMsg(errArr);
+        if (view === "create") {
+            create_course_api(data).then((res) => {
+                const msgArr = ["You are successfully create/update the course!"]
+                setErrMsg(msgArr);
                 setOpen(true);
-            }
-        });
+            }).catch((err) => {
+                console.log(err);
+                if (err.response) {
+                    console.log(err.response.status);
+                    console.log(err.response.data);
+                    const errArr = []
+                    Object.entries(err.response.data).forEach(([key, value]) => {
+                        errArr.push(`${key}: ${value}`)
+                    });
+                    setErrMsg(errArr);
+                    setOpen(true);
+                }
+            });
+        } else if (view === "edit") {
+            update_course_by_id_api(courseId, data).then((res) => {
+                const msgArr = ["You are successfully create/update the course!"]
+                setErrMsg(msgArr);
+                setOpen(true);
+            }).catch((err) => {
+                console.log(err);
+                if (err.response) {
+                    console.log(err.response.status);
+                    console.log(err.response.data);
+                    const errArr = []
+                    Object.entries(err.response.data).forEach(([key, value]) => {
+                        errArr.push(`${key}: ${value}`)
+                    }
+                    );
+                    setErrMsg(errArr);
+                    setOpen(true);
+                }
+            })
+        }
     };
 
     const handleSignupSuccess = () => {
@@ -74,7 +92,29 @@ export default function CourseFormPage() {
         const mp = new Map();
         mp.set("name", false);
         setOnTouch(mp);
-    }, []);
+        if (view === "edit") {
+            get_course_by_id_api(courseId).then((res) => {
+                console.log(res.data);
+                setName(res.data.name);
+                setDescription(res.data.description);
+                setSemester(res.data.semester);
+                setUniversity(res.data.university)
+                setYear(res.data.year);
+            }).catch((err) => {
+                console.log(err);
+                if (err.response) {
+                    console.log(err.response.status);
+                    console.log(err.response.data);
+                    const errArr = []
+                    Object.entries(err.response.data).forEach(([key, value]) => {
+                        errArr.push(`${key}: ${value}`)
+                    });
+                    setErrMsg(errArr);
+                    setOpen(true);
+                }
+            });
+        }
+    }, [courseId, view]);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -104,8 +144,8 @@ export default function CourseFormPage() {
                         ))}
                     </DialogContent>
                     <DialogActions>
-                        {errMsg[0] === "You are successfully create the course!"? <Button onClick={handleSignupSuccess}>Okay</Button>
-                        :<Button onClick={handleClose}>Retry</Button>}
+                        {errMsg[0] === "You are successfully create/update the course!" ? <Button onClick={handleSignupSuccess}>Okay</Button>
+                            : <Button onClick={handleClose}>Retry</Button>}
                     </DialogActions>
                 </Dialog>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -194,7 +234,7 @@ export default function CourseFormPage() {
                     <Box p={1}></Box>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Button fullWidth variant="contained" color="primary" onClick={(e) => navigate(-1)}>
+                            <Button fullWidth variant="contained" color="primary" onClick={handleSignupSuccess}>
                                 Back
                             </Button>
                         </Grid>

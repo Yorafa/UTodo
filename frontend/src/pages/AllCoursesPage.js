@@ -8,7 +8,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
-import { get_all_my_courses_api } from '../utils/api';
+import { Dialog, DialogContent, DialogContentText, DialogActions, DialogTitle } from '@mui/material';
+import { get_all_my_courses_api, delete_course_by_id_api } from '../utils/api';
 import Toolbar from '@mui/material/Toolbar';
 import Pagination from '@mui/material/Pagination';
 import { Link } from 'react-router-dom';
@@ -23,6 +24,13 @@ export default function AllCoursesPage() {
     const [lastPage, setLastPage] = useState(1);
     const [pageSize, setPageSize] = useState(12);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteBlocked, setDeleteBlocked] = useState(-1);
+    const [open, setOpen] = useState(false);
+    const [errMsg, setErrMsg] = useState([]);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -31,6 +39,31 @@ export default function AllCoursesPage() {
     const handlePageSizeChange = (event) => {
         setPageSize(Number(event.target.value));
         setPage(1);
+    };
+
+    const handleDelete = () => {
+        if (deleteBlocked === -1) return;
+        setOpen(false);
+        delete_course_by_id_api(deleteBlocked).then((res) => {
+            if (res.status === 204) {
+                const msgArr = ["You are successfully delete the course!"]
+                setErrMsg(msgArr);
+                setOpen(true);
+                setDeleteBlocked(-1);
+            }
+        }).catch((err) => {
+            console.log(err);
+            if (err.response) {
+                console.log(err.response.status);
+                console.log(err.response.data);
+                const errArr = []
+                Object.entries(err.response.data).forEach(([key, value]) => {
+                    errArr.push(`${key}: ${value}`)
+                });
+                setErrMsg(errArr);
+                setOpen(true);
+            }
+        });
     };
 
     useEffect(() => {
@@ -43,6 +76,17 @@ export default function AllCoursesPage() {
         };
         getCourseData();
     }, []); // one-time fetch
+
+    useEffect(() => {
+        const getCourseData = async () => {
+            const res = await get_all_my_courses_api();
+            if (res.status === 200) {
+                setCourses(res.data);
+                setFilteredCourses(res.data);
+            }
+        };
+        getCourseData();
+    }, []);
 
     useEffect(() => {
         const filtered = courses.filter((course) =>
@@ -83,6 +127,32 @@ export default function AllCoursesPage() {
                     </Typography>
                 </Container>
             </Box>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle>
+                    Warning
+                </DialogTitle>
+                <DialogContent>
+                    {errMsg.map((err) => (
+                        <DialogContentText id="alert-dialog-description" key={err}>
+                            {err}
+                        </DialogContentText>
+                    ))}
+                </DialogContent>
+                <DialogActions>
+                    {deleteBlocked === -1?
+                        <Button onClick={(e) => {window.location.reload();handleClose();}}>OK</Button>
+                    :<>
+                        <Button onClick={handleDelete}>Yes</Button>
+                        <Button onClick={handleClose}>No</Button>
+                    </>
+                    }
+                </DialogActions>
+            </Dialog>
             <Container sx={{ py: 8 }} maxWidth="md">
                 <TextField
                     label="Search Courses"
@@ -98,7 +168,7 @@ export default function AllCoursesPage() {
                     onChange={handlePageSizeChange}
                     sx={{ mx: 7 }}
                 />
-                <Link to="/course/form/create">
+                <Link to="/course/form/create/-1">
                     <Button variant="contained" size="large" sx={{ py: 1.9 }}>
                         Create a New Course
                     </Button>
@@ -122,8 +192,19 @@ export default function AllCoursesPage() {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small">View</Button>
-                                    <Button size="small">Edit</Button>
+                                    <Link to={"/course/" + card.id}>
+                                        <Button size="small">View</Button>
+                                    </Link>
+                                    <Link to={"/course/form/edit/" + card.id}>
+                                        <Button size="small">Edit</Button>
+                                    </Link>
+                                    <Link>
+                                        <Button size="small" onClick={(e) => {
+                                            setDeleteBlocked(card.id);
+                                            setErrMsg(["You are trying to delete your course. Are you sure?"]);
+                                            setOpen(true);
+                                        }}>Delete</Button>
+                                    </Link>
                                 </CardActions>
                             </Card>
                         </Grid>

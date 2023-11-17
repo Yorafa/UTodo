@@ -131,7 +131,7 @@ export const get_course_by_id_api = async (id) => {
 }
 
 export const update_course_by_id_api = async (id, data) => {
-    return await apiClient.put(`/course/${id}/`, data);
+    return await apiClient.patch(`/course/${id}/`, data);
 }
 
 export const delete_course_by_id_api = async (id) => {
