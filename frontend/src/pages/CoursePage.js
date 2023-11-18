@@ -23,7 +23,6 @@ export default function CoursesPage() {
         const getCourseData = async () => {
             const res = await get_course_by_id_api(courseId);
             if (res.status === 200) {
-                console.log(res.data)
                 setCourseInfo(res.data);
             }
             const assRes = await get_all_assessments_of_course_by_id_api(courseId);

@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from account.serializers.signin import SigninSerializer
 from account.serializers.signup import SignupSerializer
-from account.serializers.profile import ProfileSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -37,14 +35,20 @@ class SignupView(generics.CreateAPIView):
             return Response(serializer.errors, status=400)
 
 class ProfileView(APIView):
-    queryset = User.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        try:
-            user = request.user
-            serializer = ProfileSerializer(user)
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response("User does not exist") 
+    def get(self, request):
+        user = request.user
+        liked_courses = user.liked_courses.all()
+        liked_courses_data = [{'name': str(course.user.id)+course.name} for course in liked_courses]
+
+        response_data = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'liked_courses': liked_courses_data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+        

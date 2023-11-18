@@ -8,16 +8,22 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
-import { get_all_public_courses_api } from '../utils/api';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Rating from '@mui/material/Rating';
 import Toolbar from '@mui/material/Toolbar';
 import Pagination from '@mui/material/Pagination';
+import { get_all_public_courses_api, get_profile_api, like_course_by_id_api, unlike_course_by_id_api } from '../utils/api';
+import { Link } from 'react-router-dom';
 
 // TODO: filter, sort, etc.
 
 export default function PublicCoursesPage() {
+    const [username, setUsername] = useState("");
     const [courses, setCourses] = useState([]);
     const [filteredCourses, setFilteredCourses] = useState([]);
     const [page, setPage] = useState(1);
+    const [likeMap, setLikeMap] = useState(new Map());
     const [lastPage, setLastPage] = useState(1);
     const [pageSize, setPageSize] = useState(12);
     const [searchTerm, setSearchTerm] = useState('');
@@ -31,12 +37,61 @@ export default function PublicCoursesPage() {
         setPage(1);
     };
 
+    const handleLike = (e, course) => {
+        e.preventDefault();
+        if (username === "") return;
+        const newMp = new Map(likeMap);
+        let likeCnt = likeMap.get(course.user + course.name);
+        if (likeCnt === 2) {
+            unlike_course_by_id_api(course.id).then(res => {
+                if (res.status === 200) {
+                    likeCnt++;
+                    newMp.set(course.user + course.name, 0);
+                    setLikeMap(newMp);
+                }
+            }
+            ).catch((err) => {
+                if (err.response) console.log(err.response);
+            });
+        } else if (likeCnt === 0) {
+            like_course_by_id_api(course.id).then(res => {
+                if (res.status === 200) {
+                    likeCnt++;
+                    newMp.set(course.user + course.name, 2);
+                    setLikeMap(newMp);
+                }
+            }
+            ).catch((err) => {
+                if (err.response) console.log(err.response);
+            });
+        }
+    };
+
     useEffect(() => {
+        const mp = new Map();
         const getCourseData = async () => {
             const res = await get_all_public_courses_api();
             if (res.status === 200) {
                 setCourses(res.data);
                 setFilteredCourses(res.data);
+                res.data.forEach((course) => {
+                    mp.set(course.user + course.name, 0);
+                });
+                setLikeMap(mp);
+            }
+            if (localStorage.getItem('access_token') !== null) {
+                get_profile_api().then((res) => {
+                    if (res.status === 200) {
+                        setUsername(res.data.username);
+                        res.data.liked_courses.forEach((course) => {
+                            mp.set(course.name, 2);
+                        });
+                        setLikeMap(mp);
+                    }
+                }
+                ).catch((err) => {
+                    console.log(err);
+                });
             }
         };
         getCourseData();
@@ -115,8 +170,17 @@ export default function PublicCoursesPage() {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small">View</Button>
-                                    <Button size="small">Edit</Button>
+                                    <Link to={"/course/" + card.id}>
+                                        <Button size="small">View</Button>
+                                    </Link>
+                                    <Rating
+                                        value={likeMap.get(card.user + card.name) === 2 ? 1 : 0}
+                                        precision={1}
+                                        max={1}
+                                        icon={<FavoriteIcon fontSize="inherit" />}
+                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                                        onClick={(e) => handleLike(e, card)}
+                                    />
                                 </CardActions>
                             </Card>
                         </Grid>

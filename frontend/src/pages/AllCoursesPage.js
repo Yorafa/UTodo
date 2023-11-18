@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -203,7 +204,7 @@ export default function AllCoursesPage() {
                                             setDeleteBlocked(card.id);
                                             setErrMsg(["You are trying to delete your course. Are you sure?"]);
                                             setOpen(true);
-                                        }}>Delete</Button>
+                                        }}startIcon={<DeleteIcon />}>Delete</Button>
                                     </Link>
                                 </CardActions>
                             </Card>

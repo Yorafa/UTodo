@@ -45,7 +45,6 @@ export default function ProfilePage() {
                 email: response.data.email,
             });
         });
-        document.title = 'Profile';
     }, []);
 
     return (
