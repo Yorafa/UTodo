@@ -68,6 +68,7 @@ export default function AllCoursesPage() {
     };
 
     useEffect(() => {
+        if (localStorage.getItem('access_token') === null) return;
         const getCourseData = async () => {
             const res = await get_all_my_courses_api();
             if (res.status === 200) {
@@ -77,17 +78,6 @@ export default function AllCoursesPage() {
         };
         getCourseData();
     }, []); // one-time fetch
-
-    useEffect(() => {
-        const getCourseData = async () => {
-            const res = await get_all_my_courses_api();
-            if (res.status === 200) {
-                setCourses(res.data);
-                setFilteredCourses(res.data);
-            }
-        };
-        getCourseData();
-    }, []);
 
     useEffect(() => {
         const filtered = courses.filter((course) =>
@@ -146,7 +136,10 @@ export default function AllCoursesPage() {
                 </DialogContent>
                 <DialogActions>
                     {deleteBlocked === -1?
-                        <Button onClick={(e) => {window.location.reload();handleClose();}}>OK</Button>
+                        <Button onClick={(e) => {
+                            window.location.reload();
+                            handleClose();
+                        }}>OK</Button>
                     :<>
                         <Button onClick={handleDelete}>Yes</Button>
                         <Button onClick={handleClose}>No</Button>

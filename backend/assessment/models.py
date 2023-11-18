@@ -28,10 +28,8 @@ class Assessment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessments')
 
     def save(self, *args, **kwargs):
-        if self.course.grade_total + self.grade_total > 100:
+        if self.course.grade_total + self.weight > 100:
             raise ValidationError("Total grade of assessments exceeds 100.")
-        elif self.course.grade_now + self.grade_now > 100:
-            raise ValidationError("Current grade of assessments exceeds 100.")
         elif self.grade_total < self.grade_now:
             raise ValidationError("Total grade of assessments is less than current grade.")
         super().save(*args, **kwargs)

@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from course.models import Course
 from course.serializers.course import CourseSerializer, OnListCourseSerializer
 from rest_framework import status
@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 class CourseView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     pagination_class = None
 
     def get_queryset(self):

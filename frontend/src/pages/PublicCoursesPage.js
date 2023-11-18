@@ -170,7 +170,7 @@ export default function PublicCoursesPage() {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Link to={"/course/" + card.id}>
+                                    <Link to={"/course/" + card.id + "/view"}>
                                         <Button size="small">View</Button>
                                     </Link>
                                     <Rating

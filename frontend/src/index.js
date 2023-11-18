@@ -47,6 +47,10 @@ const router = createBrowserRouter([
                 element: <CoursesPage />,
             },
             {
+                path: 'course/:courseId/:view',
+                element: <CoursesPage />,
+            },
+            {
                 path: 'course/form/:view/:courseId',
                 element: <CourseFormPage />,
             },

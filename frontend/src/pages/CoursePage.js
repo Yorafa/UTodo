@@ -3,13 +3,16 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { get_course_by_id_api, get_all_assessments_of_course_by_id_api } from '../utils/api';
 import Toolbar from '@mui/material/Toolbar';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AssessmentDialog from '../components/AssessmentDialog';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useParams } from 'react-router-dom';
+import { get_course_by_id_api, get_all_assessments_of_course_by_id_api, delete_assessment_by_id_api } from '../utils/api';
 
 
 // TODO: filter, sort, etc.
@@ -17,7 +20,15 @@ import { useParams } from 'react-router-dom';
 export default function CoursesPage() {
     const [courseInfo, setCourseInfo] = useState({});
     const [assessments, setAssessments] = useState([]);
-    const { courseId } = useParams();
+    const { courseId, view } = useParams();
+
+    const handleDeleteAssessment = (assessmentId) => {
+        delete_assessment_by_id_api(assessmentId).then((res) => {
+            if (res.status === 204) {
+                window.location.reload();
+            }
+        });
+    };
 
     useEffect(() => {
         const getCourseData = async () => {
@@ -57,10 +68,17 @@ export default function CoursesPage() {
                     <Typography align="center" color="text.secondary" paragraph>
                         {courseInfo.description}
                     </Typography>
+                    <Typography align="center" color="text.secondary" paragraph>
+                        {"You currently have " + assessments.length + " assessments."}
+                    </Typography>
+                    <Typography align="center" color="text.secondary" paragraph>
+                        {"You currently have " + courseInfo.grade_now + " out of " + courseInfo.grade_total}
+                    </Typography>
                 </Container>
             </Box>
             {/* TODO: Assessment List and their grade */}
             <Container sx={{ py: 8 }} maxWidth="md">
+                {view === "view" ? <></> : <AssessmentDialog view="create" courseId={courseInfo.id} />}
                 <Toolbar />
                 <Grid container spacing={1}>
                     <div>
@@ -73,7 +91,7 @@ export default function CoursesPage() {
                                     Type:Detail
                                 </Typography>
                                 <Typography sx={{ width: '45%', flexShrink: 0 }}>
-                                Grade : % of Course : Weight
+                                    Grade : % of Course : Weight
                                 </Typography>
                                 <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                     Due Date
@@ -95,9 +113,9 @@ export default function CoursesPage() {
                                         {assessment.assessment_type + ":" + assessment.title}
                                     </Typography>
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                                        {assessment.grade_total !== 0? ((assessment.grade_now/assessment.grade_total).toFixed(2) * 100 + '%') : 0 + '%'}
+                                        {assessment.grade_total !== 0 ? ((assessment.grade_now / assessment.grade_total).toFixed(2) * 100 + '%') : 0 + '%'}
                                         {" "} : {" "}
-                                        {assessment.grade_total !== 0 ? (((assessment.grade_now/assessment.grade_total).toFixed(2) * assessment.weight) + '%') : 0 + '%'}
+                                        {assessment.grade_total !== 0 ? (((assessment.grade_now / assessment.grade_total).toFixed(2) * assessment.weight) + '%') : 0 + '%'}
                                         {" "} : {assessment.weight + '%'}
                                     </Typography>
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
@@ -106,13 +124,21 @@ export default function CoursesPage() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Typography>
-
+                                        {"Description: " + assessment.description}
                                     </Typography>
                                 </AccordionDetails>
                                 <AccordionDetails>
                                     <Typography>
-
+                                        {"Grade: This " + assessment.assessment_type + " weighted " + assessment.weight
+                                            + " and you get " + assessment.grade_now + " out of " + assessment.grade_total}
                                     </Typography>
+                                </AccordionDetails>
+                                <AccordionDetails>
+                                    {view === "view"? <></> : <>
+                                        <AssessmentDialog view="edit" courseId={courseInfo.id} assessment={assessment}/>
+                                        <Button variant="outlined" sx={{ mx: 1 }} onClick={(e) => handleDeleteAssessment(assessment.id)} startIcon={<DeleteIcon />}>Delete</Button>
+                                        </>
+                                    }
                                 </AccordionDetails>
                             </Accordion>
                         ))}

@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Course
+from course.models import Course
 from assessment.admin import AssessmentInline
 # Register your models here.
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('info', 'description', 'user_id', 'user')
+    list_display = ('info', 'description', 'user')
     list_filter = ('user',)
     inlines = [AssessmentInline]
     

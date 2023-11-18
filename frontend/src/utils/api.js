@@ -169,23 +169,3 @@ export const update_assessment_by_id_api = async (id, data) => {
 export const delete_assessment_by_id_api = async (id) => {
     return await apiClient.delete(`/course/assessment/${id}/`);
 }
-
-export const create_task_to_assessment_by_id_api = async (id, data) => {
-    return await apiClient.post(`/course/assessment/${id}/create/`, data);
-}
-
-export const get_all_tasks_of_assessment_by_id_api = async (id) => {
-    return await apiClient.get(`/course/assessment/${id}/tasks/`);
-}
-
-export const get_task_by_id_api = async (id) => {
-    return await apiClient.get(`/course/assessment/task/${id}/`);
-}
-
-export const update_task_by_id_api = async (id, data) => {
-    return await apiClient.put(`/course/assessment/task/${id}/`, data);
-}
-
-export const delete_task_by_id_api = async (id) => {
-    return await apiClient.delete(`/course/assessment/task/${id}/`);
-}
