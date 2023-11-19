@@ -57,7 +57,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://utodo.yorafa.com/",
+    "https://utodo.yorafa.com",
 ]
 
 ROOT_URLCONF = "config.urls"
