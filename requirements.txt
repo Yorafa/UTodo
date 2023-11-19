@@ -6,6 +6,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 gunicorn==21.2.0
 packaging==23.2
+psycopg2==2.9.9
 PyJWT==2.6.0
 pytz==2022.7
 sqlparse==0.4.3
