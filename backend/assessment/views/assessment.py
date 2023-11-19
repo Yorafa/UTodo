@@ -42,6 +42,7 @@ class AssessmentView(generics.RetrieveUpdateDestroyAPIView):
 class CourseAssessmentListView(generics.ListAPIView):
     serializer_class = AssessmentSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Assessment.objects.filter(course=self.kwargs['pk'])

@@ -6,11 +6,11 @@ import re
 
 class SignupSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=20, min_length=4, required=True, validators=[UniqueValidator(queryset=User.objects.all())])
-    password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password_confirmation = serializers.CharField(write_only=True, style={'input_type': 'password'})
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password_confirmation')
         extra_kwargs = {'username': {'validators': [UniqueValidator(queryset=User.objects.all())]}}
     
     def __init__(self, *args, **kwargs):
@@ -39,10 +39,10 @@ class SignupSerializer(serializers.ModelSerializer):
                 "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
         return password
     
-    def validate_password2(self, password2):
-        if password2 != self.initial_data['password']:
+    def validate_password_confirmation(self, password_confirmation):
+        if password_confirmation != self.initial_data['password']:
             raise ValidationError("Passwords do not match")
-        return password2
+        return password_confirmation
     
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():

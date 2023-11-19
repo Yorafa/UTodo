@@ -1,63 +1,54 @@
 from django.shortcuts import render
-from account.serializers.login import LoginSerializer
+from account.serializers.signin import SigninSerializer
 from account.serializers.signup import SignupSerializer
-from account.serializers.profile import ProfileSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
-class LoginView(generics.CreateAPIView):
-    serializer_class = LoginSerializer
+class SigninView(generics.CreateAPIView):
+    serializer_class = SigninSerializer
     permission_classes = (permissions.AllowAny,)
-    
-    def get(self, request, *args, **kwargs):
-        return Response("Welcome to the login page")
     
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        login(request, serializer.validated_data['user'])
-        return Response("You have successfully logged in")
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
     
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
     permission_classes = (permissions.AllowAny,)
     
-    def get(self, request, *args, **kwargs):
-        return Response("Welcome to the sign in page")
-    
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response("You have successfully signed in")
-    
-class LogoutView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    
-    def get(self, request, *args, **kwargs):
-        return Response("Logout here")
-    
-    def post(self, request, *args, **kwargs):
-        try:
-            request.user.auth_token.delete()
-        except AttributeError:
-            pass
-        logout(request)
-        return Response("You have successfully logged out")
+        if serializer.is_valid():
+            serializer.save()
+            return Response("You have successfully signed up", status=201)
+        else:
+            return Response(serializer.errors, status=400)
 
 class ProfileView(APIView):
-    queryset = User.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        try:
-            user = request.user
-            serializer = ProfileSerializer(user)
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response("User does not exist")
+    def get(self, request):
+        user = request.user
+        liked_courses = user.liked_courses.all()
+        liked_courses_data = [{'name': str(course.user.id)+course.name} for course in liked_courses]
+
+        response_data = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'liked_courses': liked_courses_data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+        

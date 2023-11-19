@@ -1,14 +1,15 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from course.models import Course
-from course.serializers.course import CourseSerializer
+from course.serializers.course import CourseSerializer, OnListCourseSerializer
 from rest_framework import status
 from rest_framework.response import Response
 
 
 class CourseView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
@@ -43,6 +44,15 @@ class CourseView(generics.RetrieveUpdateDestroyAPIView):
 class OwnCourseListView(generics.ListAPIView):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Course.objects.filter(user=self.request.user)
+    
+class OnListCourseListView(generics.ListAPIView):
+    serializer_class = OnListCourseSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+
+    def get_queryset(self):
+        return Course.objects.filter(is_on_list=True, user = self.request.user)
