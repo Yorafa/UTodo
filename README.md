@@ -1,27 +1,42 @@
-# UTodo
+# Django Backend
 
-Todo list for university courses
+## Setup
 
-[temp desgin](https://miro.com/app/board/uXjVPzzCvRo=/?share_link_id=452011946082)
+Prefer to use virtualenv to install dependencies and run the server.
 
+try to run the following commands:
 
-## TODO List
+```bash
+# create virtualenv
+# windows
+python -m venv .venv
+# unix
+python3 -m venv .venv
 
-- [ ] Frontend
-  - [x] Signin
-  - [x] Signup
-  - [x] Signout
-  - [x] Profile
-  - [x] Course
-    - [x] Create
-    - [x] Update
-    - [x] Delete
-    - [x] Get
-    - [x] Like
-    - [x] Unlike
-    - [x] fork
-    - [x] Assessment
-      - [x] Create
-      - [X] Update
-      - [x] Delete
-      - [x] Get
+# activate virtualenv
+# windows
+.venv\Scripts\activate
+# unix
+source .venv/bin/activate
+
+# install dependencies
+pip install -r requirements.txt
+```
+## ALL API
+
+- [x] POST `/course/create/` : create a course to current user
+- [x] PUT/DELETE/GET `/course/<int: id>` : update/delete/get a course by id
+- [x] GET `/course/public_all/` : get all public courses
+- [x] GET `/course/my_all/` : get all courses of current user
+- [x] GET `/course/on_list/` : get all courses of current user that show in sidebar
+- [x] PATCH/GET `/course/<int: id>/like/` : like a course or get who like this course
+- [x] PATCH `/course/<int: id>/unlike/` : un-like a course
+- [x] POST `/course/<int: id>/create/` : create a assessment to a course
+- [x] PUT/DELETE/GET `/course/assessment/<int: id>/` : update/delete/get a assessment by id
+- [x] GET `/course/<int: id>/assessments/` : get all assessments of a course by id
+- [x] GET `account/api/token/` : get token
+- [x] POST `account/ signin/` : signin
+- [x] POST `account/ signup/` : signup
+- [x] GET `account/ profile/` : get profile
+
+when you face some issues about your database, try `python manage.py migrate --run-syncdb` to remove all migration and also `python manage.py flush` to clear your database
