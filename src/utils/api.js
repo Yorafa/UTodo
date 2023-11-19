@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'https://utodo-728ce68639d0.herokuapp.com/',
     timeout: 10000
 })
 
