@@ -40,6 +40,7 @@ export default function CourseFormPage() {
         };
         if (view === "create") {
             create_course_api(data).then((res) => {
+                console.log(res);
                 const msgArr = ["You are successfully create/update the course!"]
                 setErrMsg(msgArr);
                 setOpen(true);

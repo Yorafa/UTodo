@@ -10,10 +10,9 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import Rating from '@mui/material/Rating';
-import Toolbar from '@mui/material/Toolbar';
-import Pagination from '@mui/material/Pagination';
-import { get_all_public_courses_api, get_profile_api, like_course_by_id_api, unlike_course_by_id_api } from '../utils/api';
+import { Rating, Pagination, Toolbar } from '@mui/material';
+import { get_all_public_courses_api, get_profile_api, like_course_by_id_api } from '../utils/api';
+import { create_course_api, unlike_course_by_id_api, create_assessment_to_course_by_id_api } from '../utils/api';
 import { Link } from 'react-router-dom';
 
 // TODO: filter, sort, etc.
@@ -35,6 +34,40 @@ export default function PublicCoursesPage() {
     const handlePageSizeChange = (event) => {
         setPageSize(Number(event.target.value));
         setPage(1);
+    };
+
+    const handleFork = (e, course) => {
+        if (localStorage.getItem("access_token") === null) return;
+        console.log(course);
+        const cpCourseData = {
+            name: course.name,
+            description: course.description,
+            university: course.university,
+            semester: course.semester,
+            year: course.year,
+            isPublic: false,
+            isOnList: course.isOnList,
+        };
+        create_course_api(cpCourseData).then((res) => {
+            if (res.status === 201) {
+                const createdCourseId = res.data.id;
+                course.assessments.forEach((assessment) => {
+                    const cpAssessmentData = {
+                        title: assessment.title,
+                        assessment_type: assessment.assessment_type,
+                        description: assessment.description,
+                        due_date: assessment.due_date,
+                        is_counted: assessment.is_counted,
+                        grade_now: 0,
+                        grade_total: assessment.grade_total,
+                        weight: assessment.weight,
+                        course: createdCourseId,
+                    };
+                    create_assessment_to_course_by_id_api(createdCourseId, cpAssessmentData);
+                });
+            }
+        });
+        window.location.reload();
     };
 
     const handleLike = (e, course) => {
@@ -168,11 +201,17 @@ export default function PublicCoursesPage() {
                                     <Typography>
                                         {card.description}
                                     </Typography>
+                                    <Typography>
+                                        {"Provided by: " + card.user.last_name + " " + card.user.first_name}
+                                    </Typography>
                                 </CardContent>
                                 <CardActions>
                                     <Link to={"/course/" + card.id + "/view"}>
                                         <Button size="small">View</Button>
                                     </Link>
+                                        <Button size="small" onClick={(e) => {
+                                            handleFork(e, card);
+                                        }}>Fork</Button>
                                     <Rating
                                         value={likeMap.get(card.user + card.name) === 2 ? 1 : 0}
                                         precision={1}
@@ -187,7 +226,6 @@ export default function PublicCoursesPage() {
                     ))}
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
-                    {/* center the page number */}
                     <Pagination count={lastPage} shape="rounded" page={page} onChange={(e, newPage) => handlePageChange(newPage)} />
                 </Grid>
             </Container>

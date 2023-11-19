@@ -19,7 +19,7 @@ Todo list for university courses
     - [x] Get
     - [x] Like
     - [x] Unlike
-    - [ ] fork
+    - [x] fork
     - [x] Assessment
       - [x] Create
       - [X] Update
