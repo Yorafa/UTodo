@@ -7,27 +7,19 @@ from rest_framework.response import Response
 from rest_framework import permissions
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to only allow owners of an object to edit it.
-    """
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD, or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
-
-        # Write permissions are only allowed if the user is the owner of the assessment.
         return obj.course.user == request.user
-
 
 class AssessmentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AssessmentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         user = self.request.user
         assessment_id = self.kwargs['pk']
-        return Assessment.objects.get(id=assessment_id)
+        return Assessment.objects.filter(id=assessment_id)
     
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
