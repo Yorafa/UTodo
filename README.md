@@ -1,27 +1,7 @@
 # UTodo
 
-Todo list for university courses
+This project separetely deploy on github-page(frontend) and heroku(backend). Do not use your favrioute password while creating account since I post django key in the repo.
 
-[temp desgin](https://miro.com/app/board/uXjVPzzCvRo=/?share_link_id=452011946082)
+Frontend use `create-react-app` with mui design and deploy on github-pages.
 
-
-## TODO List
-
-- [ ] Frontend
-  - [x] Signin
-  - [x] Signup
-  - [x] Signout
-  - [x] Profile
-  - [x] Course
-    - [x] Create
-    - [x] Update
-    - [x] Delete
-    - [x] Get
-    - [x] Like
-    - [x] Unlike
-    - [x] fork
-    - [x] Assessment
-      - [x] Create
-      - [X] Update
-      - [x] Delete
-      - [x] Get
+Backend use `django startproject` and deploy on heroku.
