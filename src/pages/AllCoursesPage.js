@@ -162,11 +162,11 @@ export default function AllCoursesPage() {
                     onChange={handlePageSizeChange}
                     sx={{ mx: 7 }}
                 />
-                <Link to="/course/form/create/-1">
+                {localStorage.getItem('access_token') !== null?<Link to="/course/form/create/-1">
                     <Button variant="contained" size="large" sx={{ py: 1.9 }}>
                         Create a New Course
                     </Button>
-                </Link>
+                </Link>:<></>}
                 <Toolbar />
                 <Grid container spacing={4}>
                     {filteredCourses.map((card) => (

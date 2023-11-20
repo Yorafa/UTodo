@@ -38,7 +38,6 @@ export default function PublicCoursesPage() {
 
     const handleFork = (e, course) => {
         if (localStorage.getItem("access_token") === null) return;
-        console.log(course);
         const cpCourseData = {
             name: course.name,
             description: course.description,

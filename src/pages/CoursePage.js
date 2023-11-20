@@ -90,9 +90,9 @@ export default function CoursesPage() {
                                 <Typography sx={{ width: '20%', flexShrink: 0 }}>
                                     Type:Detail
                                 </Typography>
-                                <Typography sx={{ width: '45%', flexShrink: 0 }}>
+                                {view === "view" ? <></> : <Typography sx={{ width: '45%', flexShrink: 0 }}>
                                     Grade : % of Course : Weight
-                                </Typography>
+                                </Typography>}
                                 <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                     Due Date
                                 </Typography>
@@ -112,12 +112,12 @@ export default function CoursesPage() {
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                         {assessment.assessment_type + ":" + assessment.title}
                                     </Typography>
-                                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                    {view === "view" ? <></> : <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                         {assessment.grade_total !== 0 ? ((assessment.grade_now / assessment.grade_total).toFixed(2) * 100 + '%') : 0 + '%'}
                                         {" "} : {" "}
                                         {assessment.grade_total !== 0 ? (((assessment.grade_now / assessment.grade_total).toFixed(2) * assessment.weight) + '%') : 0 + '%'}
                                         {" "} : {assessment.weight + '%'}
-                                    </Typography>
+                                    </Typography>}
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                         {assessment.due_date.slice(0, 10) + ':' + assessment.due_date.slice(11, 16)}
                                     </Typography>
