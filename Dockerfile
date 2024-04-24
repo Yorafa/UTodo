@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10-alpine
 
 ADD ./requirements.txt /app/requirements.txt
 
@@ -20,8 +20,6 @@ WORKDIR /app
 
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
-
-RUN python manage.py migrate
 
 EXPOSE 8000
 
