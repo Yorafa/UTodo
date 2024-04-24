@@ -7,7 +7,7 @@ on:
     branches: [ "frontend" ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,4 +27,5 @@ jobs:
       run: |
         git config --global user.email ${{ secrets.EMAIL }}
         git config --global user.name ${{ secrets.USERNAME }}
+        git remote set-url origin https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}
         npm run deploy
