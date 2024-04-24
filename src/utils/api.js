@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'https://utodo-728ce68639d0.herokuapp.com/',
+    baseURL: 'https://utodo-backend.yorafa.com/',
     timeout: 10000
 })
 
