@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-i5p8glw@t^1e71r751901bst1koch=m=&7be-bajzh)=2rz2fl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["utodo.yorafa.com", "localhost"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "utodo.yorafa.com"]
 
 
 # Application definition
