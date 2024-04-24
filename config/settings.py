@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-i5p8glw@t^1e71r751901bst1koch=m=&7be-bajzh)=2rz2fl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "utodo.yorafa.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -58,10 +58,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware", # CORS
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://utodo.yorafa.com",
-]
+# allow all cors
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
 
