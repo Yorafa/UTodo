@@ -1,6 +1,15 @@
 # Django Backend
 
-## Setup
+## Run
+
+### Docker
+
+Use `docker build -t your/tag .` to build image and modify the `docker-compose.yml` file to set the image tag. Then run `docker-compose up` to start the server.
+
+- docker compose will also pull a postgres image and an adminer image to manage the database
+- if want to use other database, modify the `DATABASES` in `config/settings.py` file and rebuild the image
+
+### Local
 
 Prefer to use virtualenv to install dependencies and run the server.
 
@@ -21,7 +30,14 @@ source .venv/bin/activate
 
 # install dependencies
 pip install -r requirements.txt
+
+# modify the environment variables in .env file and then run the server
+python manage.py runserver
+
+# or run by gunicorn
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
 ```
+
 ## ALL API
 
 - [x] POST `/course/create/` : create a course to current user
